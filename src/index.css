@@ -185,4 +185,41 @@
     @apply bg-clip-text text-transparent;
     background-image: linear-gradient(135deg, hsl(168 84% 32%) 0%, hsl(168 76% 24%) 100%);
   }
+
+  /* ─── Animated Estimator Preview ─── */
+  .animate-preview-fade-1 {
+    animation: previewFadeIn 0.6s ease-out 0.3s both;
+  }
+  .animate-preview-fade-2 {
+    animation: previewFadeIn 0.6s ease-out 0.6s both;
+  }
+  .animate-preview-fade-3 {
+    animation: previewFadeIn 0.6s ease-out 0.9s both;
+  }
+  .animate-preview-fade-4 {
+    animation: previewFadeIn 0.6s ease-out 1.2s both;
+  }
+  .animate-preview-fade-5 {
+    animation: previewFadeIn 0.6s ease-out 1.5s both;
+  }
+
+  .animate-progress-fill {
+    animation: progressFill 2s ease-in-out 0.5s both;
+  }
+
+  @keyframes previewFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes progressFill {
+    from { width: 0%; }
+    to { width: 100%; }
+  }
 }
