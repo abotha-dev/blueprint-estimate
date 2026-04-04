@@ -57,57 +57,68 @@ export default function Analyze() {
 
   return (
     <Layout hideFooter>
-      <div className="container py-8 md:py-12">
-        <div className="max-w-2xl mx-auto">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
-              Analyze Your Blueprint
+      <div className="relative overflow-hidden bg-[#0a0d14] text-white">
+        <div className="absolute inset-0 bg-gradient-to-b from-indigo-600/10 via-transparent to-transparent" aria-hidden="true" />
+        <div className="absolute -top-40 left-1/2 h-[420px] w-[900px] -translate-x-1/2 rounded-full bg-indigo-600/10 blur-[120px]" aria-hidden="true" />
+
+        <div className="container py-10 md:py-16">
+          <div className="max-w-3xl mx-auto text-center mb-10">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white/70">
+              <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
+              Step 1 · Upload your blueprint
+            </div>
+            <h1 className="mt-5 text-3xl md:text-4xl font-bold tracking-tight">
+              Analyze your blueprint in seconds
             </h1>
-            <p className="text-muted-foreground">
-              Upload a floor plan image to get started
+            <p className="mt-3 text-white/60">
+              Upload a floor plan image and get instant material + labor estimates.
             </p>
           </div>
 
-          {/* Main Content */}
-          <div className="space-y-6">
-            {isLoading ? (
-              <AnalyzingState
-                progress={state.progress}
-                status={state.status as 'uploading' | 'analyzing'}
-              />
-            ) : state.status === 'error' ? (
-              <ErrorState
-                message={state.error || 'An error occurred'}
-                onRetry={reset}
-              />
-            ) : (
-              <>
-                <UploadZone
-                  onFileSelect={handleFileSelect}
-                  selectedFile={selectedFile}
-                  filePreview={filePreview}
-                  onClear={reset}
-                  disabled={isLoading}
-                />
+          <div className="max-w-3xl mx-auto">
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-4 md:p-6 shadow-2xl backdrop-blur">
+              <div className="rounded-xl bg-background text-foreground p-4 md:p-6">
+                <div className="space-y-6">
+                  {isLoading ? (
+                    <AnalyzingState
+                      progress={state.progress}
+                      status={state.status as 'uploading' | 'analyzing'}
+                    />
+                  ) : state.status === 'error' ? (
+                    <ErrorState
+                      message={state.error || 'An error occurred'}
+                      onRetry={reset}
+                    />
+                  ) : (
+                    <>
+                      <UploadZone
+                        onFileSelect={handleFileSelect}
+                        selectedFile={selectedFile}
+                        filePreview={filePreview}
+                        onClear={reset}
+                        disabled={isLoading}
+                      />
 
-                <SettingsPanel
-                  settings={settings}
-                  onUpdate={updateSettings}
-                  disabled={isLoading}
-                />
+                      <SettingsPanel
+                        settings={settings}
+                        onUpdate={updateSettings}
+                        disabled={isLoading}
+                      />
 
-                <Button
-                  onClick={handleAnalyze}
-                  disabled={!selectedFile || isLoading}
-                  size="lg"
-                  className="w-full gap-2"
-                >
-                  Analyze Blueprint
-                  <ArrowRight className="w-4 h-4" />
-                </Button>
-              </>
-            )}
+                      <Button
+                        onClick={handleAnalyze}
+                        disabled={!selectedFile || isLoading}
+                        size="lg"
+                        className="w-full gap-2"
+                      >
+                        Analyze Blueprint
+                        <ArrowRight className="w-4 h-4" />
+                      </Button>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

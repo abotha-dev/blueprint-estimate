@@ -120,61 +120,97 @@ export default function Results() {
     }
   }, [result, adjustedMaterials, adjustedCostBreakdown, selectedTier, isGeneratingPdf]);
 
+  const formattedTotal = `$${(adjustedCostBreakdown.grand_total || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  const roomCount = result.rooms?.length || 0;
+  const totalArea = (result.total_area || 0).toLocaleString();
+
   return (
     <Layout hideFooter>
+      <section className="relative overflow-hidden border-b border-white/10 bg-[#0a0d14] text-white">
+        <div className="absolute inset-0 bg-gradient-to-b from-indigo-600/10 via-transparent to-transparent" aria-hidden="true" />
+        <div className="absolute -top-36 left-1/2 h-[360px] w-[820px] -translate-x-1/2 rounded-full bg-indigo-600/10 blur-[120px]" aria-hidden="true" />
+
+        <div className="container py-10 md:py-14">
+          <div className="max-w-4xl mx-auto flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+            <div>
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white/70">
+                <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
+                Estimate complete
+              </div>
+              <h1 className="mt-4 text-3xl md:text-4xl font-bold tracking-tight">
+                Your takeoff is ready
+              </h1>
+              <p className="mt-2 text-white/60">
+                {result.project_name || 'Project estimate'} · {selectedTier} tier
+              </p>
+            </div>
+
+            <div className="w-full md:w-auto rounded-2xl border border-white/10 bg-white/5 px-5 py-4 backdrop-blur">
+              <p className="text-xs uppercase tracking-[0.2em] text-white/50">Grand total</p>
+              <p className="mt-2 text-2xl font-semibold font-mono text-white">{formattedTotal}</p>
+              <p className="mt-1 text-xs text-white/50">
+                {roomCount} rooms · {totalArea} sq ft
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <StickySummary
         grandTotal={adjustedCostBreakdown.grand_total}
-        roomCount={result.rooms?.length || 0}
+        roomCount={roomCount}
         totalArea={result.total_area || 0}
       />
 
-      <div className="container py-6 md:py-10">
-        <div className="max-w-4xl mx-auto space-y-6">
-          {/* Beta Disclaimer Banner */}
-          <div className="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-lg">
-            <div className="flex items-start gap-3">
-              <AlertCircle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
-              <div className="flex-1">
-                <h3 className="text-sm font-semibold text-amber-900 mb-1">Beta Version - Verify Before Use</h3>
-                <p className="text-sm text-amber-800">
-                  AI estimates are approximately 70-80% accurate. Always verify measurements and costs for final quotes. 
-                  This tool is designed to provide quick preliminary estimates, not replace professional takeoff services.
-                </p>
+      <div className="bg-background">
+        <div className="container py-6 md:py-10">
+          <div className="max-w-4xl mx-auto space-y-6">
+            {/* Beta Disclaimer Banner */}
+            <div className="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-lg">
+              <div className="flex items-start gap-3">
+                <AlertCircle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <h3 className="text-sm font-semibold text-amber-900 mb-1">Beta Version - Verify Before Use</h3>
+                  <p className="text-sm text-amber-800">
+                    AI estimates are approximately 70-80% accurate. Always verify measurements and costs for final quotes. 
+                    This tool is designed to provide quick preliminary estimates, not replace professional takeoff services.
+                  </p>
+                </div>
               </div>
             </div>
+            
+            <AnalysisSettings
+              projectName={result.project_name}
+              qualityTier={result.quality_tier}
+              region={result.region}
+              includeLabor={result.include_labor}
+              contingencyPercent={result.contingency_percent}
+              laborAvailability={result.labor_availability}
+            />
+            
+            <BlueprintSummary result={result} thumbnail={thumbnail} />
+
+            <RoomBreakdown rooms={result.rooms || []} />
+
+            <CostTable
+              materials={adjustedMaterials}
+              costBreakdown={adjustedCostBreakdown}
+              contingencyPercent={result.contingency_percent || 10}
+              selectedTier={selectedTier}
+            />
+
+            <TierComparison
+              tiers={result.tier_comparisons || []}
+              currentTier={selectedTier}
+              onTierChange={handleTierChange}
+            />
+
+            <ResultActions
+              onNewEstimate={handleNewEstimate}
+              onDownloadPdf={handleDownloadPdf}
+              isGeneratingPdf={isGeneratingPdf}
+            />
           </div>
-          
-          <AnalysisSettings
-            projectName={result.project_name}
-            qualityTier={result.quality_tier}
-            region={result.region}
-            includeLabor={result.include_labor}
-            contingencyPercent={result.contingency_percent}
-            laborAvailability={result.labor_availability}
-          />
-          
-          <BlueprintSummary result={result} thumbnail={thumbnail} />
-
-          <RoomBreakdown rooms={result.rooms || []} />
-
-          <CostTable
-            materials={adjustedMaterials}
-            costBreakdown={adjustedCostBreakdown}
-            contingencyPercent={result.contingency_percent || 10}
-            selectedTier={selectedTier}
-          />
-
-          <TierComparison
-            tiers={result.tier_comparisons || []}
-            currentTier={selectedTier}
-            onTierChange={handleTierChange}
-          />
-
-          <ResultActions
-            onNewEstimate={handleNewEstimate}
-            onDownloadPdf={handleDownloadPdf}
-            isGeneratingPdf={isGeneratingPdf}
-          />
         </div>
       </div>
     </Layout>
