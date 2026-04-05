@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { TakeoffLogo } from '@/components/ui/TakeoffLogo';
 import { ArrowRight, Upload, Cpu, FileSpreadsheet, CheckCircle, Zap, Target, Clock, DollarSign, Ruler } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -129,13 +130,7 @@ export default function Home() {
       <header className="sticky top-0 z-50 w-full bg-[#0a0d14]/90 backdrop-blur-md border-b border-white/5">
         <div className="container flex h-16 items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-indigo-600 text-white">
-              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3 21h18" />
-                <path d="M5 21V7l7-4 7 4v14" />
-                <path d="M9 21v-6h6v6" />
-              </svg>
-            </div>
+            <TakeoffLogo size={36} />
             <span className="font-semibold text-lg text-white group-hover:text-indigo-400 transition-colors">
               Takeoff.ai
             </span>
