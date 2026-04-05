@@ -22,13 +22,13 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur-sm border-b border-border">
+    <header className="sticky top-0 z-50 w-full bg-[#0A0A0A]/90 backdrop-blur-md border-b border-[rgba(255,255,255,0.08)]">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center gap-2.5 group">
-          <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary text-primary-foreground">
-            <Building2 className="w-5 h-5" />
+          <div className="flex items-center justify-center w-9 h-9 rounded-btn bg-indigo-600 text-white">
+            <Building2 className="w-5 h-5" strokeWidth={1.5} />
           </div>
-          <span className="font-semibold text-lg text-foreground group-hover:text-primary transition-colors">
+          <span className="font-semibold text-lg text-[rgba(255,255,255,0.9)] group-hover:text-indigo-400 transition-[color] duration-150 ease-out">
             Takeoff.ai
           </span>
         </Link>
@@ -54,29 +54,29 @@ export function Header() {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline" size="sm" className="gap-2">
-                      <User className="w-4 h-4" />
+                      <User className="w-4 h-4" strokeWidth={1.5} />
                       <span className="hidden sm:inline">Account</span>
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuContent align="end" className="w-48 bg-[#27272A] border-[rgba(255,255,255,0.08)] rounded-card">
                     <DropdownMenuItem asChild>
-                      <Link to="/dashboard" className="flex items-center gap-2 cursor-pointer">
-                        <User className="w-4 h-4" />
+                      <Link to="/dashboard" className="flex items-center gap-2 cursor-pointer text-[rgba(255,255,255,0.9)]">
+                        <User className="w-4 h-4" strokeWidth={1.5} />
                         Dashboard
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link to="/analyze" className="flex items-center gap-2 cursor-pointer">
-                        <Building2 className="w-4 h-4" />
+                      <Link to="/analyze" className="flex items-center gap-2 cursor-pointer text-[rgba(255,255,255,0.9)]">
+                        <Building2 className="w-4 h-4" strokeWidth={1.5} />
                         New Analysis
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuSeparator />
+                    <DropdownMenuSeparator className="bg-[rgba(255,255,255,0.08)]" />
                     <DropdownMenuItem 
                       onClick={handleSignOut}
-                      className="flex items-center gap-2 cursor-pointer text-destructive focus:text-destructive"
+                      className="flex items-center gap-2 cursor-pointer text-red-400 focus:text-red-400"
                     >
-                      <LogOut className="w-4 h-4" />
+                      <LogOut className="w-4 h-4" strokeWidth={1.5} />
                       Log out
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -89,7 +89,7 @@ export function Header() {
                     </Button>
                   </Link>
                   <Link to="/signup">
-                    <Button size="sm">
+                    <Button size="sm" className="bg-indigo-600 hover:bg-indigo-500 text-white border-0">
                       Sign up
                     </Button>
                   </Link>

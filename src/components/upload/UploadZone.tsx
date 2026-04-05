@@ -34,9 +34,7 @@ export function UploadZone({
     e.preventDefault();
     e.stopPropagation();
     setIsDragActive(false);
-
     if (disabled) return;
-
     const files = e.dataTransfer.files;
     if (files && files[0]) {
       onFileSelect(files[0]);
@@ -53,9 +51,9 @@ export function UploadZone({
 
   if (selectedFile && filePreview) {
     return (
-      <div className="card-elevated p-6 animate-fade-in">
+      <div className="bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.08)] rounded-card p-6 animate-fade-in">
         <div className="flex items-start gap-4">
-          <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-lg overflow-hidden border border-border flex-shrink-0">
+          <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-btn overflow-hidden border border-[rgba(255,255,255,0.08)] flex-shrink-0">
             <img 
               src={filePreview} 
               alt="Blueprint preview" 
@@ -65,8 +63,8 @@ export function UploadZone({
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between gap-2">
               <div className="min-w-0">
-                <p className="font-medium text-foreground truncate">{selectedFile.name}</p>
-                <p className="text-sm text-muted-foreground mt-1">
+                <p className="font-medium text-[rgba(255,255,255,0.9)] truncate">{selectedFile.name}</p>
+                <p className="text-sm text-[rgba(255,255,255,0.5)] mt-1" style={{ fontVariantNumeric: 'tabular-nums' }}>
                   {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
                 </p>
               </div>
@@ -75,13 +73,13 @@ export function UploadZone({
                 size="icon"
                 onClick={onClear}
                 disabled={disabled}
-                className="flex-shrink-0 text-muted-foreground hover:text-foreground"
+                className="flex-shrink-0"
               >
-                <X className="w-4 h-4" />
+                <X className="w-4 h-4" strokeWidth={1.5} />
               </Button>
             </div>
-            <div className="flex items-center gap-2 mt-3 text-sm text-success">
-              <FileImage className="w-4 h-4" />
+            <div className="flex items-center gap-2 mt-3 text-sm text-emerald-400">
+              <FileImage className="w-4 h-4" strokeWidth={1.5} />
               <span>Ready to analyze</span>
             </div>
           </div>
@@ -112,19 +110,19 @@ export function UploadZone({
       
       <div className="flex flex-col items-center text-center">
         <div className={cn(
-          "w-14 h-14 rounded-full flex items-center justify-center mb-4 transition-colors",
-          isDragActive ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+          "w-14 h-14 rounded-card flex items-center justify-center mb-4 transition-[background-color,color] duration-150 ease-out",
+          isDragActive ? "bg-indigo-600 text-white" : "bg-[rgba(255,255,255,0.04)] text-[rgba(255,255,255,0.5)]"
         )}>
-          <Upload className="w-6 h-6" />
+          <Upload className="w-6 h-6" strokeWidth={1.5} />
         </div>
         
-        <p className="text-lg font-medium text-foreground mb-2">
+        <p className="text-lg font-medium text-[rgba(255,255,255,0.9)] mb-2">
           {isDragActive ? 'Drop your floor plan here' : 'Drag and drop your floor plan here'}
         </p>
-        <p className="text-sm text-muted-foreground mb-4">
+        <p className="text-sm text-[rgba(255,255,255,0.5)] mb-4">
           or click to browse
         </p>
-        <p className="text-xs text-muted-foreground">
+        <p className="text-xs text-[rgba(255,255,255,0.3)]">
           PNG, JPG, WEBP up to 10MB
         </p>
       </div>

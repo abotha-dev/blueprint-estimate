@@ -15,7 +15,6 @@ const formatQualityTier = (tier: QualityTier): string => {
 };
 
 const formatRegion = (region: Region): string => {
-  // If it's a state name (not starting with "us_"), return as-is
   if (!region.startsWith('us_')) {
     return region;
   }
@@ -45,41 +44,41 @@ export function AnalysisSettings({
   laborAvailability,
 }: AnalysisSettingsProps) {
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-6">
+    <div className="bg-[#18181B] border border-[rgba(255,255,255,0.08)] rounded-card p-6 shadow-card">
       <div className="flex items-center gap-2 mb-4">
-        <Settings className="h-5 w-5 text-gray-600" />
-        <h3 className="text-lg font-semibold text-gray-900">Analysis Settings</h3>
+        <Settings className="h-5 w-5 text-[rgba(255,255,255,0.5)]" strokeWidth={1.5} />
+        <h3 className="text-lg font-semibold text-[rgba(255,255,255,0.9)]" style={{ letterSpacing: '-0.02em' }}>Analysis Settings</h3>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <dt className="text-sm font-medium text-gray-500">Project Name</dt>
-          <dd className="mt-1 text-sm text-gray-900">{projectName}</dd>
+          <dt className="text-sm font-medium text-[rgba(255,255,255,0.5)]">Project Name</dt>
+          <dd className="mt-1 text-sm text-[rgba(255,255,255,0.9)]">{projectName}</dd>
         </div>
         
         <div>
-          <dt className="text-sm font-medium text-gray-500">Quality Tier</dt>
-          <dd className="mt-1 text-sm text-gray-900">{formatQualityTier(qualityTier)}</dd>
+          <dt className="text-sm font-medium text-[rgba(255,255,255,0.5)]">Quality Tier</dt>
+          <dd className="mt-1 text-sm text-[rgba(255,255,255,0.9)]">{formatQualityTier(qualityTier)}</dd>
         </div>
         
         <div>
-          <dt className="text-sm font-medium text-gray-500">Location</dt>
-          <dd className="mt-1 text-sm text-gray-900">{formatRegion(region)}</dd>
+          <dt className="text-sm font-medium text-[rgba(255,255,255,0.5)]">Location</dt>
+          <dd className="mt-1 text-sm text-[rgba(255,255,255,0.9)]">{formatRegion(region)}</dd>
         </div>
         
         <div>
-          <dt className="text-sm font-medium text-gray-500">Labor Availability</dt>
-          <dd className="mt-1 text-sm text-gray-900">{formatLaborAvailability(laborAvailability)}</dd>
+          <dt className="text-sm font-medium text-[rgba(255,255,255,0.5)]">Labor Availability</dt>
+          <dd className="mt-1 text-sm text-[rgba(255,255,255,0.9)]">{formatLaborAvailability(laborAvailability)}</dd>
         </div>
         
         <div>
-          <dt className="text-sm font-medium text-gray-500">Labor Costs</dt>
-          <dd className="mt-1 text-sm text-gray-900">{includeLabor ? 'Included' : 'Not Included'}</dd>
+          <dt className="text-sm font-medium text-[rgba(255,255,255,0.5)]">Labor Costs</dt>
+          <dd className="mt-1 text-sm text-[rgba(255,255,255,0.9)]">{includeLabor ? 'Included' : 'Not Included'}</dd>
         </div>
         
         <div>
-          <dt className="text-sm font-medium text-gray-500">Contingency</dt>
-          <dd className="mt-1 text-sm text-gray-900">{contingencyPercent}%</dd>
+          <dt className="text-sm font-medium text-[rgba(255,255,255,0.5)]">Contingency</dt>
+          <dd className="mt-1 text-sm text-[rgba(255,255,255,0.9)]" style={{ fontVariantNumeric: 'tabular-nums' }}>{contingencyPercent}%</dd>
         </div>
       </div>
     </div>

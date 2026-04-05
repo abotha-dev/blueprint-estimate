@@ -27,7 +27,6 @@ function formatCurrency(amount: number) {
 }
 
 export function CostTable({ materials, costBreakdown, contingencyPercent, selectedTier = 'standard' }: CostTableProps) {
-  // Group materials by category
   const grouped = materials.reduce((acc, item) => {
     const category = item.category || 'Other';
     if (!acc[category]) acc[category] = [];
@@ -36,10 +35,10 @@ export function CostTable({ materials, costBreakdown, contingencyPercent, select
   }, {} as Record<string, MaterialItem[]>);
 
   return (
-    <div className="card-elevated overflow-hidden animate-slide-up" style={{ animationDelay: '0.2s' }}>
-      <div className="p-4 border-b border-border flex items-center justify-between">
-        <h3 className="font-semibold text-foreground">Cost Estimate</h3>
-        <span className="text-sm px-3 py-1 rounded-full bg-primary/10 text-primary font-medium">
+    <div className="bg-[#18181B] border border-[rgba(255,255,255,0.08)] rounded-card shadow-card overflow-hidden animate-slide-up" style={{ animationDelay: '0.2s' }}>
+      <div className="p-4 border-b border-[rgba(255,255,255,0.08)] flex items-center justify-between">
+        <h3 className="font-semibold text-[rgba(255,255,255,0.9)]" style={{ letterSpacing: '-0.02em' }}>Cost Estimate</h3>
+        <span className="text-sm px-3 py-1 rounded-badge bg-indigo-500/10 text-indigo-400 font-medium">
           {TIER_LABELS[selectedTier]} Tier
         </span>
       </div>
@@ -47,39 +46,39 @@ export function CostTable({ materials, costBreakdown, contingencyPercent, select
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead>Material</TableHead>
-              <TableHead className="text-right">Qty</TableHead>
-              <TableHead className="text-right hidden sm:table-cell">Unit Cost</TableHead>
-              <TableHead className="text-right hidden md:table-cell">Materials</TableHead>
-              <TableHead className="text-right hidden md:table-cell">Labor</TableHead>
-              <TableHead className="text-right">Total</TableHead>
+            <TableRow className="border-[rgba(255,255,255,0.08)]">
+              <TableHead className="text-[rgba(255,255,255,0.5)]">Material</TableHead>
+              <TableHead className="text-right text-[rgba(255,255,255,0.5)]">Qty</TableHead>
+              <TableHead className="text-right hidden sm:table-cell text-[rgba(255,255,255,0.5)]">Unit Cost</TableHead>
+              <TableHead className="text-right hidden md:table-cell text-[rgba(255,255,255,0.5)]">Materials</TableHead>
+              <TableHead className="text-right hidden md:table-cell text-[rgba(255,255,255,0.5)]">Labor</TableHead>
+              <TableHead className="text-right text-[rgba(255,255,255,0.5)]">Total</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {Object.entries(grouped).map(([category, items]) => (
               <>
-                <TableRow key={category} className="bg-muted/50">
-                  <TableCell colSpan={6} className="font-medium text-muted-foreground text-xs uppercase tracking-wide py-2">
+                <TableRow key={category} className="bg-[rgba(255,255,255,0.02)] border-[rgba(255,255,255,0.08)]">
+                  <TableCell colSpan={6} className="font-medium text-[rgba(255,255,255,0.5)] text-xs uppercase tracking-wide py-2">
                     {category}
                   </TableCell>
                 </TableRow>
                 {items.map((item, index) => (
-                  <TableRow key={`${category}-${index}`}>
-                    <TableCell>{item.name || 'Unknown Material'}</TableCell>
-                    <TableCell className="text-right font-mono text-sm">
+                  <TableRow key={`${category}-${index}`} className="border-[rgba(255,255,255,0.08)]">
+                    <TableCell className="text-[rgba(255,255,255,0.9)]">{item.name || 'Unknown Material'}</TableCell>
+                    <TableCell className="text-right font-mono text-sm text-[rgba(255,255,255,0.7)]" style={{ fontVariantNumeric: 'tabular-nums' }}>
                       {item.quantity || 0} {item.unit || 'units'}
                     </TableCell>
-                    <TableCell className="text-right font-mono text-sm hidden sm:table-cell">
+                    <TableCell className="text-right font-mono text-sm hidden sm:table-cell text-[rgba(255,255,255,0.7)]" style={{ fontVariantNumeric: 'tabular-nums' }}>
                       {formatCurrency(item.unit_cost)}
                     </TableCell>
-                    <TableCell className="text-right font-mono text-sm hidden md:table-cell">
+                    <TableCell className="text-right font-mono text-sm hidden md:table-cell text-[rgba(255,255,255,0.7)]" style={{ fontVariantNumeric: 'tabular-nums' }}>
                       {formatCurrency(item.material_cost)}
                     </TableCell>
-                    <TableCell className="text-right font-mono text-sm hidden md:table-cell">
+                    <TableCell className="text-right font-mono text-sm hidden md:table-cell text-[rgba(255,255,255,0.7)]" style={{ fontVariantNumeric: 'tabular-nums' }}>
                       {formatCurrency(item.labor_cost)}
                     </TableCell>
-                    <TableCell className="text-right font-mono text-sm font-medium">
+                    <TableCell className="text-right font-mono text-sm font-semibold text-[rgba(255,255,255,0.9)]" style={{ fontVariantNumeric: 'tabular-nums' }}>
                       {formatCurrency(item.total_cost)}
                     </TableCell>
                   </TableRow>
@@ -91,27 +90,27 @@ export function CostTable({ materials, costBreakdown, contingencyPercent, select
       </div>
 
       {/* Summary */}
-      <div className="border-t border-border bg-surface p-4">
-        <div className="space-y-2 max-w-xs ml-auto">
+      <div className="border-t border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.02)] p-4">
+        <div className="space-y-2 max-w-xs ml-auto" style={{ fontVariantNumeric: 'tabular-nums' }}>
           <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Materials Subtotal</span>
-            <span className="font-mono">{formatCurrency(costBreakdown.materials_subtotal)}</span>
+            <span className="text-[rgba(255,255,255,0.5)]">Materials Subtotal</span>
+            <span className="font-mono text-[rgba(255,255,255,0.9)]">{formatCurrency(costBreakdown.materials_subtotal)}</span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Labor Subtotal</span>
-            <span className="font-mono">{formatCurrency(costBreakdown.labor_subtotal)}</span>
+            <span className="text-[rgba(255,255,255,0.5)]">Labor Subtotal</span>
+            <span className="font-mono text-[rgba(255,255,255,0.9)]">{formatCurrency(costBreakdown.labor_subtotal)}</span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Subtotal</span>
-            <span className="font-mono">{formatCurrency(costBreakdown.subtotal)}</span>
+            <span className="text-[rgba(255,255,255,0.5)]">Subtotal</span>
+            <span className="font-mono text-[rgba(255,255,255,0.9)]">{formatCurrency(costBreakdown.subtotal)}</span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Contingency ({contingencyPercent}%)</span>
-            <span className="font-mono">{formatCurrency(costBreakdown.contingency_amount)}</span>
+            <span className="text-[rgba(255,255,255,0.5)]">Contingency ({contingencyPercent}%)</span>
+            <span className="font-mono text-[rgba(255,255,255,0.9)]">{formatCurrency(costBreakdown.contingency_amount)}</span>
           </div>
-          <div className="flex justify-between pt-2 border-t border-border">
-            <span className="font-semibold">Grand Total</span>
-            <span className="font-mono font-bold text-lg text-primary">
+          <div className="flex justify-between pt-2 border-t border-[rgba(255,255,255,0.08)]">
+            <span className="font-semibold text-[rgba(255,255,255,0.9)]">Grand Total</span>
+            <span className="font-mono font-bold text-lg text-indigo-400">
               {formatCurrency(costBreakdown.grand_total)}
             </span>
           </div>

@@ -18,7 +18,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        sans: ['Geist Sans', 'Geist', 'system-ui', '-apple-system', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
       },
       colors: {
@@ -83,17 +83,22 @@ export default {
         },
       },
       borderRadius: {
+        'badge': '4px',
+        'btn': '8px',
+        'card': '12px',
+        'modal': '16px',
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
         xl: "calc(var(--radius) + 4px)",
       },
       boxShadow: {
-        sm: "var(--shadow-sm)",
-        DEFAULT: "var(--shadow)",
-        md: "var(--shadow-md)",
-        lg: "var(--shadow-lg)",
-        xl: "var(--shadow-xl)",
+        'card': '0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.08)',
+        sm: "0 1px 2px rgba(0,0,0,0.04)",
+        DEFAULT: "0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.08)",
+        md: "0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.08)",
+        lg: "0 2px 4px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.12)",
+        xl: "0 4px 8px rgba(0,0,0,0.08), 0 16px 40px rgba(0,0,0,0.16)",
       },
       keyframes: {
         "accordion-down": {

@@ -1,85 +1,89 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&display=swap');
+
+@font-face {
+  font-family: 'Geist Sans';
+  src: url('/fonts/GeistVariable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Takeoff.ai Design System */
+/* Takeoff.ai Design System — UX/UI Pro Max */
 
 @layer base {
   :root {
-    /* Core brand - Teal */
-    --primary: 168 84% 32%;
+    /* Core brand - Indigo (desaturated ~75%) */
+    --primary: 234 56% 48%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 168 84% 28%;
-    --primary-muted: 168 40% 96%;
+    --primary-hover: 234 56% 42%;
+    --primary-muted: 234 20% 14%;
 
-    /* Secondary - Deep teal */
-    --secondary: 168 76% 24%;
+    /* Secondary */
+    --secondary: 234 40% 36%;
     --secondary-foreground: 0 0% 100%;
 
-    /* Backgrounds */
-    --background: 0 0% 100%;
-    --foreground: 215 28% 17%;
-    --surface: 210 40% 98%;
+    /* Backgrounds — dark system */
+    --background: 0 0% 4%;          /* #0A0A0A */
+    --foreground: 0 0% 90%;         /* rgba(255,255,255,0.9) */
+    --surface: 240 6% 10%;          /* #18181B */
 
     /* Cards & Popovers */
-    --card: 0 0% 100%;
-    --card-foreground: 215 28% 17%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 215 28% 17%;
+    --card: 240 6% 10%;             /* #18181B */
+    --card-foreground: 0 0% 90%;
+    --popover: 240 4% 16%;          /* #27272A */
+    --popover-foreground: 0 0% 90%;
 
     /* Muted elements */
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 240 4% 16%;
+    --muted-foreground: 0 0% 50%;   /* rgba(255,255,255,0.5) */
 
     /* Accent */
-    --accent: 168 40% 96%;
-    --accent-foreground: 168 84% 32%;
+    --accent: 234 20% 14%;
+    --accent-foreground: 234 56% 60%;
 
     /* States */
     --success: 160 84% 39%;
     --success-foreground: 0 0% 100%;
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
-    --destructive: 0 84% 60%;
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Borders & Inputs */
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 168 84% 32%;
+    /* Borders & Inputs — rgba(255,255,255,0.08) equivalent */
+    --border: 0 0% 100% / 0.08;
+    --input: 0 0% 100% / 0.08;
+    --ring: 234 56% 48%;
 
     /* Layout */
-    --radius: 0.625rem;
+    --radius: 0.75rem;
 
-    /* Shadows */
-    --shadow-sm: 0 1px 2px 0 hsl(215 28% 17% / 0.05);
-    --shadow: 0 1px 3px 0 hsl(215 28% 17% / 0.1), 0 1px 2px -1px hsl(215 28% 17% / 0.1);
-    --shadow-md: 0 4px 6px -1px hsl(215 28% 17% / 0.1), 0 2px 4px -2px hsl(215 28% 17% / 0.1);
-    --shadow-lg: 0 10px 15px -3px hsl(215 28% 17% / 0.1), 0 4px 6px -4px hsl(215 28% 17% / 0.1);
-    --shadow-xl: 0 20px 25px -5px hsl(215 28% 17% / 0.1), 0 8px 10px -6px hsl(215 28% 17% / 0.1);
+    /* Shadows — multi-layer system */
+    --shadow-card: 0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.08);
 
     /* Confidence badges */
     --confidence-high: 160 84% 39%;
     --confidence-medium: 38 92% 50%;
-    --confidence-low: 0 84% 60%;
+    --confidence-low: 0 72% 51%;
 
-    /* Sidebar (keeping for compatibility) */
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 168 84% 32%;
+    /* Sidebar */
+    --sidebar-background: 240 6% 10%;
+    --sidebar-foreground: 0 0% 90%;
+    --sidebar-primary: 234 56% 48%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 168 40% 96%;
-    --sidebar-accent-foreground: 168 84% 32%;
-    --sidebar-border: 214 32% 91%;
-    --sidebar-ring: 168 84% 32%;
+    --sidebar-accent: 234 20% 14%;
+    --sidebar-accent-foreground: 234 56% 60%;
+    --sidebar-border: 0 0% 100% / 0.08;
+    --sidebar-ring: 234 56% 48%;
   }
 }
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: rgba(255, 255, 255, 0.08);
   }
 
   html {
@@ -87,50 +91,61 @@
   }
 
   body {
-    @apply bg-background text-foreground antialiased;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: #0A0A0A;
+    color: rgba(255, 255, 255, 0.9);
+    font-family: 'Geist Sans', 'Geist', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold tracking-tight;
+    font-weight: 600;
+    letter-spacing: -0.02em;
   }
 
-  /* Monospace for numbers/costs */
-  .font-mono {
+  h1, h2 {
+    letter-spacing: -0.03em;
+  }
+
+  /* Tabular nums on all numeric data */
+  .font-mono,
+  [data-numeric],
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
     font-family: 'JetBrains Mono', monospace;
   }
 }
 
 @layer components {
-  /* Hero gradient background */
-  .hero-gradient {
-    background: linear-gradient(
-      135deg,
-      hsl(168 40% 98%) 0%,
-      hsl(210 40% 98%) 50%,
-      hsl(168 30% 96%) 100%
-    );
-  }
-
-  /* Card with subtle shadow */
+  /* Card with multi-layer shadow + border */
   .card-elevated {
-    @apply bg-card rounded-xl border border-border;
-    box-shadow: var(--shadow-md);
+    background-color: #18181B;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.08);
   }
 
   /* Upload zone styling */
   .upload-zone {
-    @apply border-2 border-dashed border-border rounded-xl transition-all duration-200;
+    border: 2px dashed rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    transition: border-color 150ms ease-out, background-color 150ms ease-out;
   }
 
   .upload-zone:hover,
   .upload-zone-active {
-    @apply border-primary bg-primary-muted;
+    border-color: hsl(234 56% 48%);
+    background-color: hsl(234 56% 48% / 0.05);
   }
 
   /* Sticky summary bar */
   .sticky-summary {
-    @apply sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background-color: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
 
   /* Print styles */
@@ -138,7 +153,6 @@
     .no-print {
       display: none !important;
     }
-    
     .print-break {
       page-break-before: always;
     }
@@ -146,13 +160,13 @@
 }
 
 @layer utilities {
-  /* Custom animations */
+  /* Custom animations — named properties only */
   .animate-fade-in {
-    animation: fadeIn 0.3s ease-out;
+    animation: fadeIn 150ms ease-out;
   }
 
   .animate-slide-up {
-    animation: slideUp 0.4s ease-out;
+    animation: slideUp 200ms ease-out;
   }
 
   .animate-pulse-subtle {
@@ -182,40 +196,26 @@
 
   /* Gradient text */
   .text-gradient {
-    @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, hsl(168 84% 32%) 0%, hsl(168 76% 24%) 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-image: linear-gradient(135deg, hsl(234 56% 48%) 0%, hsl(234 40% 36%) 100%);
   }
 
-  /* ─── Animated Estimator Preview ─── */
-  .animate-preview-fade-1 {
-    animation: previewFadeIn 0.6s ease-out 0.3s both;
-  }
-  .animate-preview-fade-2 {
-    animation: previewFadeIn 0.6s ease-out 0.6s both;
-  }
-  .animate-preview-fade-3 {
-    animation: previewFadeIn 0.6s ease-out 0.9s both;
-  }
-  .animate-preview-fade-4 {
-    animation: previewFadeIn 0.6s ease-out 1.2s both;
-  }
-  .animate-preview-fade-5 {
-    animation: previewFadeIn 0.6s ease-out 1.5s both;
-  }
+  /* Animated Estimator Preview */
+  .animate-preview-fade-1 { animation: previewFadeIn 0.6s ease-out 0.3s both; }
+  .animate-preview-fade-2 { animation: previewFadeIn 0.6s ease-out 0.6s both; }
+  .animate-preview-fade-3 { animation: previewFadeIn 0.6s ease-out 0.9s both; }
+  .animate-preview-fade-4 { animation: previewFadeIn 0.6s ease-out 1.2s both; }
+  .animate-preview-fade-5 { animation: previewFadeIn 0.6s ease-out 1.5s both; }
 
   .animate-progress-fill {
     animation: progressFill 2s ease-in-out 0.5s both;
   }
 
   @keyframes previewFadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(12px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   @keyframes progressFill {

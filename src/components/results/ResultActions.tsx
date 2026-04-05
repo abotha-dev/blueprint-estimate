@@ -23,17 +23,17 @@ export function ResultActions({ onNewEstimate, onDownloadPdf, isGeneratingPdf = 
           </>
         ) : (
           <>
-            <Download className="w-4 h-4" />
+            <Download className="w-4 h-4" strokeWidth={1.5} />
             Download PDF Report
           </>
         )}
       </Button>
       <Button 
         onClick={onNewEstimate}
-        className="flex-1 gap-2"
+        className="flex-1 gap-2 bg-indigo-600 hover:bg-indigo-500 text-white border-0"
         disabled={isGeneratingPdf}
       >
-        <RefreshCw className="w-4 h-4" />
+        <RefreshCw className="w-4 h-4" strokeWidth={1.5} />
         Start New Estimate
       </Button>
     </div>

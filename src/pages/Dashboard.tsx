@@ -13,14 +13,15 @@ import {
 import { Layout } from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { UploadHistory } from '@/hooks/useAuth';
 
 const SUBSCRIPTION_LABELS: Record<string, { label: string; color: string }> = {
-  free: { label: 'Free', color: 'bg-muted text-muted-foreground' },
-  pro: { label: 'Pro', color: 'bg-primary text-primary-foreground' },
-  agency: { label: 'Agency', color: 'bg-secondary text-secondary-foreground' },
+  free: { label: 'Free', color: 'bg-[rgba(255,255,255,0.04)] text-[rgba(255,255,255,0.5)] border border-[rgba(255,255,255,0.08)]' },
+  pro: { label: 'Pro', color: 'bg-indigo-600 text-white' },
+  agency: { label: 'Agency', color: 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30' },
 };
 
 export default function Dashboard() {
@@ -96,173 +97,188 @@ export default function Dashboard() {
 
   return (
     <Layout>
-      <div className="container py-8 md:py-12">
-        <div className="max-w-4xl mx-auto">
-          {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
-              Dashboard
-            </h1>
-            <p className="text-muted-foreground">
-              Manage your account and view your analysis history
-            </p>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-2">
-            {/* Account Info Card */}
-            <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 text-primary">
-                  <User className="w-5 h-5" />
-                </div>
-                <h2 className="text-lg font-semibold text-foreground">Account</h2>
-              </div>
-              
-              <div className="space-y-3">
-                <div>
-                  <label className="text-sm text-muted-foreground">Email</label>
-                  <p className="text-foreground font-medium">{user?.email}</p>
-                </div>
-                <div>
-                  <label className="text-sm text-muted-foreground">Member since</label>
-                  <p className="text-foreground font-medium">
-                    {user?.created_at ? formatDate(user.created_at) : '—'}
-                  </p>
-                </div>
-              </div>
+      <div className="bg-[#0A0A0A] text-[rgba(255,255,255,0.9)] min-h-[calc(100vh-64px)]">
+        <div className="container py-10 md:py-16">
+          <div className="max-w-4xl mx-auto">
+            {/* Header */}
+            <div className="mb-8">
+              <h1 className="text-2xl md:text-3xl font-bold mb-2" style={{ letterSpacing: '-0.03em' }}>
+                Dashboard
+              </h1>
+              <p className="text-[rgba(255,255,255,0.5)]">
+                Manage your account and view your analysis history
+              </p>
             </div>
 
-            {/* Subscription Card */}
-            <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 text-primary">
-                  <CreditCard className="w-5 h-5" />
-                </div>
-                <h2 className="text-lg font-semibold text-foreground">Subscription</h2>
-              </div>
-              
-              <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <Badge className={subscriptionInfo.color}>
-                    {subscriptionInfo.label}
-                  </Badge>
-                  {subscription === 'free' && (
-                    <span className="text-sm text-muted-foreground">
-                      3 estimates/month
-                    </span>
-                  )}
+            <div className="grid gap-6 md:grid-cols-2">
+              {/* Account Info Card */}
+              <div className="bg-[#18181B] border border-[rgba(255,255,255,0.08)] rounded-card p-6 shadow-card">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="flex items-center justify-center w-10 h-10 rounded-card bg-indigo-500/10 text-indigo-400">
+                    <User className="w-5 h-5" strokeWidth={1.5} />
+                  </div>
+                  <h2 className="text-lg font-semibold" style={{ letterSpacing: '-0.02em' }}>Account</h2>
                 </div>
                 
-                <div className="flex gap-2">
-                  {subscription === 'free' ? (
-                    <Link to="/pricing">
-                      <Button size="sm" className="gap-1">
-                        Upgrade
-                        <ArrowRight className="w-3 h-3" />
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-sm text-[rgba(255,255,255,0.5)]">Email</label>
+                    <p className="font-medium text-[rgba(255,255,255,0.9)]">{user?.email}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm text-[rgba(255,255,255,0.5)]">Member since</label>
+                    <p className="font-medium text-[rgba(255,255,255,0.9)]">
+                      {user?.created_at ? formatDate(user.created_at) : '—'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Subscription Card */}
+              <div className="bg-[#18181B] border border-[rgba(255,255,255,0.08)] rounded-card p-6 shadow-card">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="flex items-center justify-center w-10 h-10 rounded-card bg-indigo-500/10 text-indigo-400">
+                    <CreditCard className="w-5 h-5" strokeWidth={1.5} />
+                  </div>
+                  <h2 className="text-lg font-semibold" style={{ letterSpacing: '-0.02em' }}>Subscription</h2>
+                </div>
+                
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <Badge className={subscriptionInfo.color + ' rounded-badge'}>
+                      {subscriptionInfo.label}
+                    </Badge>
+                    {subscription === 'free' && (
+                      <span className="text-sm text-[rgba(255,255,255,0.5)]" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                        3 estimates/month
+                      </span>
+                    )}
+                  </div>
+                  
+                  <div className="flex gap-2">
+                    {subscription === 'free' ? (
+                      <Link to="/pricing">
+                        <Button size="sm" className="gap-2 bg-indigo-600 hover:bg-indigo-500 text-white border-0">
+                          Upgrade
+                          <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
+                        </Button>
+                      </Link>
+                    ) : (
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="gap-2"
+                        onClick={handleManageSubscription}
+                        disabled={loadingPortal}
+                      >
+                        {loadingPortal ? (
+                          <Loader2 className="w-3 h-3 animate-spin" />
+                        ) : (
+                          <>
+                            Manage Subscription
+                            <ExternalLink className="w-3 h-3" strokeWidth={1.5} />
+                          </>
+                        )}
                       </Button>
-                    </Link>
-                  ) : (
-                    <Button 
-                      size="sm" 
-                      variant="outline" 
-                      className="gap-1"
-                      onClick={handleManageSubscription}
-                      disabled={loadingPortal}
-                    >
-                      {loadingPortal ? (
-                        <Loader2 className="w-3 h-3 animate-spin" />
-                      ) : (
-                        <>
-                          Manage Subscription
-                          <ExternalLink className="w-3 h-3" />
-                        </>
-                      )}
-                    </Button>
-                  )}
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Upload History */}
-          <div className="mt-8">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 text-primary">
-                  <FileText className="w-5 h-5" />
+            {/* Upload History */}
+            <div className="mt-8">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-center w-10 h-10 rounded-card bg-indigo-500/10 text-indigo-400">
+                    <FileText className="w-5 h-5" strokeWidth={1.5} />
+                  </div>
+                  <h2 className="text-lg font-semibold" style={{ letterSpacing: '-0.02em' }}>Estimates This Month</h2>
                 </div>
-                <h2 className="text-lg font-semibold text-foreground">Upload History</h2>
+                <Link to="/analyze">
+                  <Button size="sm" className="gap-2 bg-indigo-600 hover:bg-indigo-500 text-white border-0">
+                    New Analysis
+                    <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
+                  </Button>
+                </Link>
               </div>
-              <Link to="/analyze">
-                <Button size="sm" className="gap-1">
-                  New Analysis
-                  <ArrowRight className="w-3 h-3" />
-                </Button>
-              </Link>
-            </div>
 
-            <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
-              {loadingUploads ? (
-                <div className="flex items-center justify-center py-12">
-                  <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
-                </div>
-              ) : uploads.length === 0 ? (
-                <div className="text-center py-12 px-6">
-                  <FileText className="w-12 h-12 text-muted-foreground/50 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-foreground mb-2">
-                    No analyses yet
-                  </h3>
-                  <p className="text-muted-foreground mb-4">
-                    Upload your first blueprint to get started
-                  </p>
-                  <Link to="/analyze">
-                    <Button>
-                      Analyze Blueprint
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </Button>
-                  </Link>
-                </div>
-              ) : (
-                <div className="divide-y divide-border">
-                  {uploads.map((upload) => (
-                    <div
-                      key={upload.id}
-                      className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-muted">
-                          <FileText className="w-5 h-5 text-muted-foreground" />
-                        </div>
-                        <div>
-                          <p className="font-medium text-foreground">
-                            {upload.filename}
-                          </p>
-                          <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                            <span className="flex items-center gap-1">
-                              <Calendar className="w-3 h-3" />
-                              {formatDate(upload.created_at)}
-                            </span>
-                            {upload.rooms_detected && (
-                              <span>{upload.rooms_detected} rooms</span>
-                            )}
+              <div className="bg-[#18181B] border border-[rgba(255,255,255,0.08)] rounded-card shadow-card overflow-hidden">
+                {loadingUploads ? (
+                  <div className="p-6 space-y-4">
+                    {[1, 2, 3].map((i) => (
+                      <div key={i} className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <Skeleton className="w-10 h-10 rounded-btn bg-[rgba(255,255,255,0.04)]" />
+                          <div className="space-y-2">
+                            <Skeleton className="h-4 w-32 bg-[rgba(255,255,255,0.04)]" />
+                            <Skeleton className="h-3 w-24 bg-[rgba(255,255,255,0.04)]" />
                           </div>
                         </div>
+                        <Skeleton className="h-5 w-20 bg-[rgba(255,255,255,0.04)]" />
                       </div>
-                      <div className="text-right">
-                        <p className="font-mono font-semibold text-foreground flex items-center gap-1">
-                          <DollarSign className="w-4 h-4" />
-                          {formatCurrency(upload.total_estimate)}
-                        </p>
-                        {upload.total_area && (
-                          <p className="text-sm text-muted-foreground">
-                            {upload.total_area.toLocaleString()} sq ft
-                          </p>
-                        )}
-                      </div>
+                    ))}
+                  </div>
+                ) : uploads.length === 0 ? (
+                  <div className="text-center py-16 px-6">
+                    <div className="w-16 h-16 rounded-card bg-[rgba(255,255,255,0.04)] flex items-center justify-center mx-auto mb-4">
+                      <FileText className="w-8 h-8 text-[rgba(255,255,255,0.3)]" strokeWidth={1.5} />
                     </div>
-                  ))}
-                </div>
-              )}
+                    <h3 className="text-lg font-medium mb-2" style={{ letterSpacing: '-0.02em' }}>
+                      No analyses yet
+                    </h3>
+                    <p className="text-[rgba(255,255,255,0.5)] mb-6">
+                      Upload your first blueprint to get started
+                    </p>
+                    <Link to="/analyze">
+                      <Button className="gap-2 bg-indigo-600 hover:bg-indigo-500 text-white border-0">
+                        Analyze Blueprint
+                        <ArrowRight className="w-4 h-4" strokeWidth={1.5} />
+                      </Button>
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="divide-y divide-[rgba(255,255,255,0.08)]">
+                    {uploads.map((upload) => (
+                      <div
+                        key={upload.id}
+                        className="flex items-center justify-between p-4 hover:bg-[rgba(255,255,255,0.02)] transition-[background-color] duration-150 ease-out"
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="flex items-center justify-center w-10 h-10 rounded-btn bg-[rgba(255,255,255,0.04)]">
+                            <FileText className="w-5 h-5 text-[rgba(255,255,255,0.5)]" strokeWidth={1.5} />
+                          </div>
+                          <div>
+                            <p className="font-medium text-[rgba(255,255,255,0.9)]">
+                              {upload.filename}
+                            </p>
+                            <div className="flex items-center gap-3 text-sm text-[rgba(255,255,255,0.5)]">
+                              <span className="flex items-center gap-1">
+                                <Calendar className="w-3 h-3" strokeWidth={1.5} />
+                                {formatDate(upload.created_at)}
+                              </span>
+                              {upload.rooms_detected && (
+                                <span style={{ fontVariantNumeric: 'tabular-nums' }}>{upload.rooms_detected} rooms</span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-mono font-semibold text-[rgba(255,255,255,0.9)] flex items-center gap-1" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                            <DollarSign className="w-4 h-4" strokeWidth={1.5} />
+                            {formatCurrency(upload.total_estimate)}
+                          </p>
+                          {upload.total_area && (
+                            <p className="text-sm text-[rgba(255,255,255,0.5)]" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                              {upload.total_area.toLocaleString()} sq ft
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

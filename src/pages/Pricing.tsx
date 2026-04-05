@@ -27,7 +27,7 @@ const plans: Plan[] = [
   {
     id: 'free',
     name: 'Free',
-    icon: <Zap className="w-6 h-6" />,
+    icon: <Zap className="w-6 h-6" strokeWidth={1.5} />,
     monthlyPrice: 0,
     annualPrice: 0,
     description: 'Perfect for trying out Takeoff.ai',
@@ -42,7 +42,7 @@ const plans: Plan[] = [
   {
     id: 'pro',
     name: 'Pro',
-    icon: <Building2 className="w-6 h-6" />,
+    icon: <Building2 className="w-6 h-6" strokeWidth={1.5} />,
     monthlyPrice: 49,
     annualPrice: 39,
     description: 'For contractors who need more',
@@ -60,7 +60,7 @@ const plans: Plan[] = [
   {
     id: 'agency',
     name: 'Agency',
-    icon: <Users className="w-6 h-6" />,
+    icon: <Users className="w-6 h-6" strokeWidth={1.5} />,
     monthlyPrice: 149,
     annualPrice: 119,
     description: 'For teams and agencies',
@@ -111,122 +111,127 @@ export default function Pricing() {
 
   return (
     <Layout>
-      <div className="container mx-auto px-4 py-16 md:py-24">
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-            Simple, Transparent Pricing
-          </h1>
-          <p className="text-lg text-muted-foreground">
-            Choose the plan that fits your business. All plans include our core AI-powered estimation technology.
-          </p>
-        </div>
+      <div className="bg-[#0A0A0A] text-[rgba(255,255,255,0.9)]">
+        <div className="container mx-auto px-4 py-20 md:py-24">
+          {/* Header */}
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ letterSpacing: '-0.03em' }}>
+              Simple, Transparent Pricing
+            </h1>
+            <p className="text-lg text-[rgba(255,255,255,0.5)] leading-relaxed">
+              Choose the plan that fits your business. All plans include our core AI-powered estimation technology.
+            </p>
+          </div>
 
-        {/* Billing Toggle */}
-        <div className="flex items-center justify-center gap-4 mb-12">
-          <Label htmlFor="billing-toggle" className={cn(
-            "text-sm font-medium transition-colors",
-            !isAnnual ? "text-foreground" : "text-muted-foreground"
-          )}>
-            Monthly
-          </Label>
-          <Switch
-            id="billing-toggle"
-            checked={isAnnual}
-            onCheckedChange={setIsAnnual}
-          />
-          <Label htmlFor="billing-toggle" className={cn(
-            "text-sm font-medium transition-colors",
-            isAnnual ? "text-foreground" : "text-muted-foreground"
-          )}>
-            Annual
-            <span className="ml-2 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
-              Save 20%
-            </span>
-          </Label>
-        </div>
+          {/* Billing Toggle */}
+          <div className="flex items-center justify-center gap-4 mb-12">
+            <Label htmlFor="billing-toggle" className={cn(
+              "text-sm font-medium transition-[color] duration-150 ease-out",
+              !isAnnual ? "text-[rgba(255,255,255,0.9)]" : "text-[rgba(255,255,255,0.5)]"
+            )}>
+              Monthly
+            </Label>
+            <Switch
+              id="billing-toggle"
+              checked={isAnnual}
+              onCheckedChange={setIsAnnual}
+            />
+            <Label htmlFor="billing-toggle" className={cn(
+              "text-sm font-medium transition-[color] duration-150 ease-out",
+              isAnnual ? "text-[rgba(255,255,255,0.9)]" : "text-[rgba(255,255,255,0.5)]"
+            )}>
+              Annual
+              <span className="ml-2 text-xs bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded-badge">
+                Save 20%
+              </span>
+            </Label>
+          </div>
 
-        {/* Pricing Cards */}
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {plans.map((plan) => {
-            const price = isAnnual ? plan.annualPrice : plan.monthlyPrice;
-            const isLoading = loadingPlan === plan.id;
+          {/* Pricing Cards */}
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {plans.map((plan) => {
+              const price = isAnnual ? plan.annualPrice : plan.monthlyPrice;
+              const isLoading = loadingPlan === plan.id;
 
-            return (
-              <div
-                key={plan.id}
-                className={cn(
-                  "relative rounded-2xl border bg-card p-8 flex flex-col",
-                  plan.popular
-                    ? "border-primary shadow-lg shadow-primary/10 scale-105"
-                    : "border-border"
-                )}
-              >
-                {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                    <span className="bg-primary text-primary-foreground text-sm font-medium px-4 py-1 rounded-full">
-                      Most Popular
-                    </span>
-                  </div>
-                )}
-
-                <div className="mb-6">
-                  <div className={cn(
-                    "w-12 h-12 rounded-xl flex items-center justify-center mb-4",
+              return (
+                <div
+                  key={plan.id}
+                  className={cn(
+                    "relative rounded-card border bg-[#18181B] p-8 flex flex-col shadow-card",
                     plan.popular
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted text-muted-foreground"
-                  )}>
-                    {plan.icon}
-                  </div>
-                  <h3 className="text-xl font-bold text-foreground">{plan.name}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">{plan.description}</p>
-                </div>
+                      ? "border-indigo-500/40 ring-1 ring-indigo-500/20 scale-105"
+                      : "border-[rgba(255,255,255,0.08)]"
+                  )}
+                >
+                  {plan.popular && (
+                    <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                      <span className="bg-indigo-600 text-white text-sm font-medium px-4 py-1 rounded-badge">
+                        Most Popular
+                      </span>
+                    </div>
+                  )}
 
-                <div className="mb-6">
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-bold text-foreground font-mono">
-                      ${price}
-                    </span>
-                    {price > 0 && (
-                      <span className="text-muted-foreground">/month</span>
+                  <div className="mb-6">
+                    <div className={cn(
+                      "w-12 h-12 rounded-card flex items-center justify-center mb-4",
+                      plan.popular
+                        ? "bg-indigo-600 text-white"
+                        : "bg-[rgba(255,255,255,0.04)] text-[rgba(255,255,255,0.5)]"
+                    )}>
+                      {plan.icon}
+                    </div>
+                    <h3 className="text-xl font-bold text-[rgba(255,255,255,0.9)]" style={{ letterSpacing: '-0.02em' }}>{plan.name}</h3>
+                    <p className="text-sm text-[rgba(255,255,255,0.5)] mt-1">{plan.description}</p>
+                  </div>
+
+                  <div className="mb-6">
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-4xl font-bold text-[rgba(255,255,255,0.9)] font-mono" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                        ${price}
+                      </span>
+                      {price > 0 && (
+                        <span className="text-[rgba(255,255,255,0.5)]">/month</span>
+                      )}
+                    </div>
+                    {isAnnual && price > 0 && (
+                      <p className="text-sm text-[rgba(255,255,255,0.4)] mt-1" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                        Billed annually (${price * 12}/year)
+                      </p>
                     )}
                   </div>
-                  {isAnnual && price > 0 && (
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Billed annually (${price * 12}/year)
-                    </p>
-                  )}
+
+                  <ul className="space-y-3 mb-8 flex-1">
+                    {plan.features.map((feature) => (
+                      <li key={feature} className="flex items-start gap-3">
+                        <Check className="w-5 h-5 text-indigo-400 shrink-0 mt-0.5" strokeWidth={1.5} />
+                        <span className="text-sm text-[rgba(255,255,255,0.7)]">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <Button
+                    onClick={() => handleSelectPlan(plan)}
+                    disabled={isLoading}
+                    variant={plan.popular ? 'default' : 'outline'}
+                    className={cn(
+                      "w-full",
+                      plan.popular && "bg-indigo-600 hover:bg-indigo-500 text-white border-0"
+                    )}
+                    size="lg"
+                  >
+                    {isLoading ? 'Loading...' : plan.cta}
+                  </Button>
                 </div>
+              );
+            })}
+          </div>
 
-                <ul className="space-y-3 mb-8 flex-1">
-                  {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-3">
-                      <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                      <span className="text-sm text-foreground">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <Button
-                  onClick={() => handleSelectPlan(plan)}
-                  disabled={isLoading}
-                  variant={plan.popular ? 'default' : 'outline'}
-                  className="w-full"
-                  size="lg"
-                >
-                  {isLoading ? 'Loading...' : plan.cta}
-                </Button>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* FAQ or Trust */}
-        <div className="mt-16 text-center">
-          <p className="text-muted-foreground">
-            All plans include a 14-day money-back guarantee. No questions asked.
-          </p>
+          {/* Trust */}
+          <div className="mt-16 text-center">
+            <p className="text-[rgba(255,255,255,0.4)]">
+              All plans include a 14-day money-back guarantee. No questions asked.
+            </p>
+          </div>
         </div>
       </div>
     </Layout>

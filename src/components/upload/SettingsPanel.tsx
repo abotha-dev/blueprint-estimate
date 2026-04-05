@@ -84,29 +84,29 @@ export function SettingsPanel({ settings, onUpdate, disabled }: SettingsPanelPro
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <div className="card-elevated overflow-hidden">
+    <div className="bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.08)] rounded-card overflow-hidden">
       <button
         type="button"
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center justify-between p-4 text-left hover:bg-muted/50 transition-colors"
+        className="w-full flex items-center justify-between p-4 text-left hover:bg-[rgba(255,255,255,0.02)] transition-[background-color] duration-150 ease-out"
         disabled={disabled}
       >
         <div className="flex items-center gap-3">
-          <Settings className="w-5 h-5 text-muted-foreground" />
-          <span className="font-medium">Project Settings</span>
+          <Settings className="w-5 h-5 text-[rgba(255,255,255,0.5)]" strokeWidth={1.5} />
+          <span className="font-medium text-[rgba(255,255,255,0.9)]">Project Settings</span>
         </div>
         <ChevronDown className={cn(
-          "w-5 h-5 text-muted-foreground transition-transform",
+          "w-5 h-5 text-[rgba(255,255,255,0.5)] transition-[transform] duration-150 ease-out",
           isExpanded && "rotate-180"
-        )} />
+        )} strokeWidth={1.5} />
       </button>
 
       <div className={cn(
-        "grid transition-all duration-200",
+        "grid transition-[grid-template-rows] duration-200 ease-out",
         isExpanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
       )}>
         <div className="overflow-hidden">
-          <div className="p-4 pt-0 space-y-6 border-t border-border">
+          <div className="p-4 pt-0 space-y-6 border-t border-[rgba(255,255,255,0.08)]">
             {/* Project Name */}
             <div className="space-y-2">
               <Label htmlFor="project-name">Project Name (optional)</Label>
@@ -201,10 +201,10 @@ export function SettingsPanel({ settings, onUpdate, disabled }: SettingsPanelPro
                     onClick={() => onUpdate({ labor_availability: option.value })}
                     disabled={disabled}
                     className={cn(
-                      "relative flex flex-col items-center p-3 rounded-lg border-2 transition-all",
+                      "relative flex flex-col items-center p-3 rounded-btn border-2 transition-[border-color,background-color] duration-150 ease-out",
                       settings.labor_availability === option.value
-                        ? "border-primary bg-primary/5"
-                        : "border-border hover:border-muted-foreground/50",
+                        ? "border-indigo-500/50 bg-indigo-500/5"
+                        : "border-[rgba(255,255,255,0.08)] hover:border-[rgba(255,255,255,0.16)]",
                       disabled && "opacity-50 cursor-not-allowed"
                     )}
                   >
