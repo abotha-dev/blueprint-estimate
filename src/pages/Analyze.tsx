@@ -29,7 +29,6 @@ export default function Analyze() {
   const handleAnalyze = async () => {
     const result = await analyze();
     if (result && user) {
-      // Save to upload history
       const { error } = await supabase.from('upload_history').insert({
         user_id: user.id,
         filename: selectedFile?.name || 'Unknown',
@@ -44,7 +43,7 @@ export default function Analyze() {
         console.error('Failed to save upload history:', error);
         toast({
           title: 'Note',
-          description: 'Analysis complete, but we couldn\'t save to your history.',
+          description: "Analysis complete, but we couldn't save to your history.",
           variant: 'destructive',
         });
       }
@@ -57,27 +56,27 @@ export default function Analyze() {
 
   return (
     <Layout hideFooter>
-      <div className="relative overflow-hidden bg-[#0a0d14] text-white">
+      <div className="relative overflow-hidden bg-[#0A0A0A] text-[rgba(255,255,255,0.9)]">
         <div className="absolute inset-0 bg-gradient-to-b from-indigo-600/10 via-transparent to-transparent" aria-hidden="true" />
         <div className="absolute -top-40 left-1/2 h-[420px] w-[900px] -translate-x-1/2 rounded-full bg-indigo-600/10 blur-[120px]" aria-hidden="true" />
 
-        <div className="container py-10 md:py-16">
+        <div className="container py-12 md:py-20">
           <div className="max-w-3xl mx-auto text-center mb-10">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white/70">
+            <div className="inline-flex items-center gap-2 rounded-badge border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.04)] px-3 py-1.5 text-xs text-[rgba(255,255,255,0.7)]">
               <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
               Step 1 · Upload your blueprint
             </div>
-            <h1 className="mt-5 text-3xl md:text-4xl font-bold tracking-tight">
+            <h1 className="mt-5 text-3xl md:text-4xl font-bold" style={{ letterSpacing: '-0.03em' }}>
               Analyze your blueprint in seconds
             </h1>
-            <p className="mt-3 text-white/60">
+            <p className="mt-3 text-[rgba(255,255,255,0.5)] leading-relaxed">
               Upload a floor plan image and get instant material + labor estimates.
             </p>
           </div>
 
           <div className="max-w-3xl mx-auto">
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4 md:p-6 shadow-2xl backdrop-blur">
-              <div className="rounded-xl bg-background text-foreground p-4 md:p-6">
+            <div className="rounded-modal border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.04)] p-4 md:p-6 shadow-card backdrop-blur">
+              <div className="rounded-card bg-[#18181B] p-4 md:p-6">
                 <div className="space-y-6">
                   {isLoading ? (
                     <AnalyzingState
@@ -98,13 +97,11 @@ export default function Analyze() {
                         onClear={reset}
                         disabled={isLoading}
                       />
-
                       <SettingsPanel
                         settings={settings}
                         onUpdate={updateSettings}
                         disabled={isLoading}
                       />
-
                       <Button
                         onClick={handleAnalyze}
                         disabled={!selectedFile || isLoading}
@@ -112,7 +109,7 @@ export default function Analyze() {
                         className="w-full gap-2"
                       >
                         Analyze Blueprint
-                        <ArrowRight className="w-4 h-4" />
+                        <ArrowRight className="w-4 h-4" strokeWidth={1.5} />
                       </Button>
                     </>
                   )}
