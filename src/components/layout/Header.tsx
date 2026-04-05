@@ -1,6 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Building2, LogOut, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { TakeoffLogo } from '@/components/ui/TakeoffLogo';
 import { useAuthContext } from '@/contexts/AuthContext';
 import {
   DropdownMenu,
@@ -25,9 +26,7 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full bg-[#0A0A0A]/90 backdrop-blur-md border-b border-[rgba(255,255,255,0.08)]">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center gap-2.5 group">
-          <div className="flex items-center justify-center w-9 h-9 rounded-btn bg-indigo-600 text-white">
-            <Building2 className="w-5 h-5" strokeWidth={1.5} />
-          </div>
+          <TakeoffLogo size={36} />
           <span className="font-semibold text-lg text-[rgba(255,255,255,0.9)] group-hover:text-indigo-400 transition-[color] duration-150 ease-out">
             Takeoff.ai
           </span>

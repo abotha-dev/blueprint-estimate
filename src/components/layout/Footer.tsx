@@ -1,4 +1,4 @@
-import { Building2 } from 'lucide-react';
+import { TakeoffLogo } from '@/components/ui/TakeoffLogo';
 
 export function Footer() {
   return (
@@ -6,9 +6,7 @@ export function Footer() {
       <div className="container py-8 md:py-12">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2.5">
-            <div className="flex items-center justify-center w-8 h-8 rounded-btn bg-indigo-600 text-white">
-              <Building2 className="w-4 h-4" strokeWidth={1.5} />
-            </div>
+            <TakeoffLogo size={28} />
             <span className="font-semibold text-[rgba(255,255,255,0.9)]">Takeoff.ai</span>
           </div>
 
