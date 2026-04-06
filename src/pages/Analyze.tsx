@@ -11,6 +11,17 @@ import { useAuthContext } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
+const GUEST_LIMIT = 2;
+const GUEST_COUNT_KEY = 'takeoff_guest_analyses';
+
+function getGuestCount(): number {
+  return parseInt(localStorage.getItem(GUEST_COUNT_KEY) || '0', 10);
+}
+
+function incrementGuestCount() {
+  localStorage.setItem(GUEST_COUNT_KEY, String(getGuestCount() + 1));
+}
+
 export default function Analyze() {
   const navigate = useNavigate();
   const { user } = useAuthContext();
@@ -26,29 +37,47 @@ export default function Analyze() {
     updateSettings,
   } = useAnalysis();
 
-  const handleAnalyze = async () => {
-    const result = await analyze();
-    if (result && user) {
-      const { error } = await supabase.from('upload_history').insert({
-        user_id: user.id,
-        filename: selectedFile?.name || 'Unknown',
-        file_size: selectedFile?.size || null,
-        rooms_detected: result.rooms.length,
-        total_area: result.total_area,
-        total_estimate: result.cost_breakdown.grand_total,
-        quality_tier: result.quality_tier,
-      });
+  const guestCount = getGuestCount();
+  const guestLimitReached = !user && guestCount >= GUEST_LIMIT;
 
-      if (error) {
-        console.error('Failed to save upload history:', error);
-        toast({
-          title: 'Note',
-          description: "Analysis complete, but we couldn't save to your history.",
-          variant: 'destructive',
+  const handleAnalyze = async () => {
+    if (guestLimitReached) {
+      toast({
+        title: 'Free limit reached',
+        description: 'Sign up for free to run unlimited analyses and save your results.',
+      });
+      navigate('/signup');
+      return;
+    }
+
+    const result = await analyze();
+    if (result) {
+      // Save history only for logged-in users
+      if (user) {
+        const { error } = await supabase.from('upload_history').insert({
+          user_id: user.id,
+          filename: selectedFile?.name || 'Unknown',
+          file_size: selectedFile?.size || null,
+          rooms_detected: result.rooms.length,
+          total_area: result.total_area,
+          total_estimate: result.cost_breakdown.grand_total,
+          quality_tier: result.quality_tier,
         });
+
+        if (error) {
+          console.error('Failed to save upload history:', error);
+          toast({
+            title: 'Note',
+            description: "Analysis complete, but we couldn't save to your history.",
+            variant: 'destructive',
+          });
+        }
+      } else {
+        // Guest — increment counter
+        incrementGuestCount();
       }
 
-      navigate('/results', { state: { result, thumbnail: filePreview } });
+      navigate('/results', { state: { result, thumbnail: filePreview, isGuest: !user } });
     }
   };
 
@@ -72,6 +101,13 @@ export default function Analyze() {
             <p className="mt-3 text-[rgba(255,255,255,0.5)] leading-relaxed">
               Upload a floor plan image and get instant material + labor estimates.
             </p>
+            {!user && (
+              <p className="mt-2 text-xs text-[rgba(255,255,255,0.35)]">
+                {guestLimitReached
+                  ? "You've used your free analyses. Sign up to continue."
+                  : `Free guest analysis — ${GUEST_LIMIT - guestCount} of ${GUEST_LIMIT} remaining. No account needed.`}
+              </p>
+            )}
           </div>
 
           <div className="max-w-3xl mx-auto">
@@ -95,20 +131,20 @@ export default function Analyze() {
                         selectedFile={selectedFile}
                         filePreview={filePreview}
                         onClear={reset}
-                        disabled={isLoading}
+                        disabled={isLoading || guestLimitReached}
                       />
                       <SettingsPanel
                         settings={settings}
                         onUpdate={updateSettings}
-                        disabled={isLoading}
+                        disabled={isLoading || guestLimitReached}
                       />
                       <Button
                         onClick={handleAnalyze}
-                        disabled={!selectedFile || isLoading}
+                        disabled={!selectedFile || isLoading || guestLimitReached}
                         size="lg"
                         className="w-full gap-2"
                       >
-                        Analyze Blueprint
+                        {guestLimitReached ? 'Sign Up to Continue' : 'Analyze Blueprint'}
                         <ArrowRight className="w-4 h-4" strokeWidth={1.5} />
                       </Button>
                     </>

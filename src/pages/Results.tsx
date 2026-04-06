@@ -15,9 +15,10 @@ import { AlertCircle } from 'lucide-react';
 export default function Results() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { result: initialResult, thumbnail } = (location.state || {}) as { 
+  const { result: initialResult, thumbnail, isGuest } = (location.state || {}) as { 
     result?: AnalysisResult; 
     thumbnail?: string;
+    isGuest?: boolean;
   };
 
   const [result, setResult] = useState<AnalysisResult | null>(initialResult || null);
@@ -126,6 +127,13 @@ export default function Results() {
 
   return (
     <Layout hideFooter>
+      {isGuest && (
+        <div className="w-full bg-indigo-600/90 text-white text-sm text-center py-2.5 px-4">
+          You're viewing a guest analysis.{' '}
+          <a href="/signup" className="underline font-medium hover:text-white/80">Sign up free</a>{' '}
+          to save results, run unlimited analyses, and access your history.
+        </div>
+      )}
       <section className="relative overflow-hidden border-b border-white/10 bg-[#0a0d14] text-white">
         <div className="absolute inset-0 bg-gradient-to-b from-indigo-600/10 via-transparent to-transparent" aria-hidden="true" />
         <div className="absolute -top-36 left-1/2 h-[360px] w-[820px] -translate-x-1/2 rounded-full bg-indigo-600/10 blur-[120px]" aria-hidden="true" />
