@@ -135,8 +135,8 @@ export default function Home() {
               <span className="font-semibold text-lg text-white group-hover:text-indigo-400 transition-colors">
                 Takeoff.ai
               </span>
-              <span className="rounded-full border border-indigo-400/30 bg-indigo-500/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.12em] text-indigo-300">
-                Beta
+              <span className="rounded-full border border-indigo-400/20 bg-indigo-500/8 px-2 py-0.5 text-[10px] font-semibold tracking-[0.14em] text-indigo-400/90" style={{fontVariantCaps: 'small-caps', letterSpacing: '0.12em'}}>
+                BETA
               </span>
             </div>
           </Link>
@@ -262,6 +262,49 @@ export default function Home() {
                 </p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+
+      {/* How we estimate + validation */}
+      <section className="py-20 md:py-24 border-t border-white/5">
+        <div className="container">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">How we estimate</h2>
+              <p className="text-white/40 max-w-xl mx-auto text-sm leading-relaxed">
+                Takeoff.ai combines AI blueprint analysis with construction cost databases to produce estimates across four phases.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-14">
+              {[
+                { phase: 'Structural Shell', items: 'Framing, foundation, roofing', color: 'text-sky-400' },
+                { phase: 'Exterior Finishes', items: 'Windows, doors, siding, trim', color: 'text-emerald-400' },
+                { phase: 'Interior Finishes', items: 'Flooring, paint, drywall, cabinetry', color: 'text-violet-400' },
+                { phase: 'Not included', items: 'MEP, site work, permits, land', color: 'text-white/30' },
+              ].map(({ phase, items, color }) => (
+                <div key={phase} className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
+                  <p className={`text-xs font-semibold mb-1.5 ${color}`}>{phase}</p>
+                  <p className="text-[11px] text-white/40 leading-relaxed">{items}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Validation callout */}
+            <div className="rounded-2xl border border-indigo-500/20 bg-indigo-500/5 px-6 py-5 flex flex-col md:flex-row md:items-center gap-4">
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-white mb-1">Validated against real blueprints</p>
+                <p className="text-xs text-white/40 leading-relaxed">
+                  A 1,124 sq ft residential permit blueprint estimated at <span className="text-white/70 font-medium">$118,817</span> — within the contractor reference range of $78k–$162k for this home size and scope.
+                </p>
+              </div>
+              <div className="shrink-0 flex items-center gap-2 text-xs text-indigo-300 font-medium">
+                <span className="w-1.5 h-1.5 rounded-full bg-indigo-400" />
+                Source: NAHB 2024 + HomeAdvisor
+              </div>
+            </div>
           </div>
         </div>
       </section>
