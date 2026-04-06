@@ -81,48 +81,68 @@ export default function Home() {
 
       {/* Hero */}
       <section className="relative py-20 md:py-28 overflow-hidden">
-        {/* Background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-600/5 via-transparent to-transparent" aria-hidden="true" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-blue-600/8 rounded-full blur-[120px]" aria-hidden="true" />
+        {/* Blueprint grid background */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+          <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="hero-grid-sm" width="40" height="40" patternUnits="userSpaceOnUse">
+                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="0.75" />
+              </pattern>
+              <pattern id="hero-grid-lg" width="200" height="200" patternUnits="userSpaceOnUse">
+                <path d="M 200 0 L 0 0 0 200" fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#hero-grid-sm)" />
+            <rect width="100%" height="100%" fill="url(#hero-grid-lg)" />
+          </svg>
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0a0d14]/50 to-[#0a0d14]" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-blue-600/6 rounded-full blur-[140px]" />
+        </div>
 
         <div className="container relative z-10">
-          <div className="max-w-3xl mx-auto text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-blue-500/20 bg-blue-500/5 text-xs text-blue-300 mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
-              AI-powered construction estimating
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Left — text */}
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-blue-500/20 bg-blue-500/5 text-xs text-blue-300 mb-6">
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
+                AI-powered construction estimating
+              </div>
+              <h1
+                className="text-4xl md:text-5xl font-bold leading-tight mb-6"
+                style={{
+                  background: 'linear-gradient(to bottom, #ffffff 0%, rgba(255,255,255,0.72) 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                  letterSpacing: '-0.03em',
+                }}
+              >
+                Accurate construction estimates in minutes
+              </h1>
+              <p className="text-base text-white/50 mb-3 leading-relaxed">
+                Upload a blueprint. Our AI extracts every room, calculates square footage, and returns detailed material and labor costs — instantly.
+              </p>
+              <p className="text-xs text-white/28 mb-8 leading-relaxed">
+                Beta: estimates cover structural shell, exterior finishes, and interior finishes. MEP, site work, permits, and land excluded.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Link to="/analyze">
+                  <Button size="lg" className="w-full sm:w-auto gap-2 text-base bg-blue-600 hover:bg-blue-500 text-white border-0 shadow-lg shadow-blue-600/20">
+                    Try it free
+                    <ArrowRight className="w-4 h-4" />
+                  </Button>
+                </Link>
+                <a href="#how-it-works">
+                  <Button size="lg" variant="outline" className="w-full sm:w-auto text-base border-white/10 text-white/70 hover:text-white hover:bg-white/5 hover:border-white/20">
+                    See how it works
+                  </Button>
+                </a>
+              </div>
             </div>
-            <h1
-              className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6"
-              style={{
-                background: 'linear-gradient(to bottom, #ffffff 0%, rgba(255,255,255,0.7) 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                letterSpacing: '-0.03em',
-              }}
-            >
-              Accurate construction estimates in minutes
-            </h1>
-            <p className="text-lg text-white/50 max-w-xl mx-auto mb-10">
-              Upload a blueprint. Our AI extracts every room, calculates square footage, and returns detailed material and labor costs — instantly.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/analyze">
-                <Button size="lg" className="w-full sm:w-auto gap-2 text-base bg-blue-600 hover:bg-blue-500 text-white border-0 shadow-lg shadow-blue-600/20">
-                  Try it free
-                  <ArrowRight className="w-4 h-4" />
-                </Button>
-              </Link>
-              <a href="#how-it-works">
-                <Button size="lg" variant="outline" className="w-full sm:w-auto text-base border-white/10 text-white/70 hover:text-white hover:bg-white/5 hover:border-white/20">
-                  See how it works
-                </Button>
-              </a>
-            </div>
-          </div>
 
-          {/* Blueprint hero */}
-          <BlueprintHero />
+            {/* Right — blueprint floor plan */}
+            <BlueprintHero />
+          </div>
         </div>
       </section>
 
