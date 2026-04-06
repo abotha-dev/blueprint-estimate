@@ -13,6 +13,8 @@ interface CostTableProps {
   costBreakdown: CostBreakdown;
   contingencyPercent: number;
   selectedTier?: QualityTier;
+  structuralTotal?: number;
+  combinedGrandTotal?: number;
 }
 
 const TIER_LABELS: Record<QualityTier, string> = {
@@ -26,7 +28,7 @@ function formatCurrency(amount: number) {
   return '$' + (amount || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-export function CostTable({ materials, costBreakdown, contingencyPercent, selectedTier = 'standard' }: CostTableProps) {
+export function CostTable({ materials, costBreakdown, contingencyPercent, selectedTier = 'standard', structuralTotal = 0, combinedGrandTotal }: CostTableProps) {
   // Group materials by category
   const grouped = materials.reduce((acc, item) => {
     const category = item.category || 'Other';
@@ -109,10 +111,16 @@ export function CostTable({ materials, costBreakdown, contingencyPercent, select
             <span className="text-muted-foreground">Contingency ({contingencyPercent}%)</span>
             <span className="font-mono">{formatCurrency(costBreakdown.contingency_amount)}</span>
           </div>
+          {structuralTotal > 0 && (
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Structural Shell</span>
+              <span className="font-mono">{formatCurrency(structuralTotal)}</span>
+            </div>
+          )}
           <div className="flex justify-between pt-2 border-t border-border">
             <span className="font-semibold">Grand Total</span>
             <span className="font-mono font-bold text-lg text-primary">
-              {formatCurrency(costBreakdown.grand_total)}
+              {formatCurrency(combinedGrandTotal ?? (costBreakdown.grand_total + structuralTotal))}
             </span>
           </div>
         </div>

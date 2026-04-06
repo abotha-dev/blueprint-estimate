@@ -12,6 +12,8 @@ import { AnalysisResult, QualityTier, MaterialItem, CostBreakdown } from '@/type
 import { generatePDFReport } from '@/services/api';
 import { AlertCircle } from 'lucide-react';
 
+const formatCurrency = (value: number) => `$$${(value || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
 export default function Results() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -66,25 +68,70 @@ export default function Results() {
         grand_total: 0,
       };
     }
-    
-    // Get the selected tier's grand total directly from tier_comparisons
-    const selectedTierData = result.tier_comparisons?.find(t => t.tier === selectedTier);
-    const grandTotal = selectedTierData?.grand_total || result.cost_breakdown.grand_total * tierMultiplier;
-    
-    // Calculate other values based on the multiplier
+
     const materialsSubtotal = result.cost_breakdown.materials_subtotal * tierMultiplier;
     const laborSubtotal = result.cost_breakdown.labor_subtotal * tierMultiplier;
     const subtotal = materialsSubtotal + laborSubtotal;
     const contingencyAmount = subtotal * (result.contingency_percent / 100);
-    
+
     return {
       materials_subtotal: materialsSubtotal,
       labor_subtotal: laborSubtotal,
       subtotal: subtotal,
       contingency_amount: contingencyAmount,
-      grand_total: grandTotal,
+      grand_total: subtotal + contingencyAmount,
     };
-  }, [result?.cost_breakdown, result?.tier_comparisons, result?.contingency_percent, selectedTier, tierMultiplier]);
+  }, [result?.cost_breakdown, result?.contingency_percent, tierMultiplier]);
+
+
+  const selectedTierData = result.tier_comparisons?.find(t => t.tier === selectedTier);
+
+  const structuralEstimates = useMemo(() => {
+    if (!result?.structural_estimates) return null;
+
+    const multiplier = tierMultiplier;
+    const scaleDetail = (detail: any) => {
+      const line_items = Object.fromEntries(
+        Object.entries(detail.line_items || {}).map(([key, item]: any) => [
+          key,
+          {
+            ...item,
+            material_cost: (item.material_cost || 0) * multiplier,
+            labor_cost: (item.labor_cost || 0) * multiplier,
+            total_cost: (item.total_cost || 0) * multiplier,
+          },
+        ])
+      );
+
+      return {
+        ...detail,
+        line_items,
+        total_material: (detail.total_material || 0) * multiplier,
+        total_labor: (detail.total_labor || 0) * multiplier,
+        grand_total: (detail.grand_total || 0) * multiplier,
+      };
+    };
+
+    return {
+      ...result.structural_estimates,
+      framing: scaleDetail(result.structural_estimates.framing),
+      foundation: scaleDetail(result.structural_estimates.foundation),
+      roofing: {
+        ...scaleDetail(result.structural_estimates.roofing),
+        roof_area_sqft: result.structural_estimates.roofing?.roof_area_sqft,
+      },
+      subtotal_material: (result.structural_estimates.subtotal_material || 0) * multiplier,
+      subtotal_labor: (result.structural_estimates.subtotal_labor || 0) * multiplier,
+      grand_total: (result.structural_estimates.grand_total || 0) * multiplier,
+    };
+  }, [result?.structural_estimates, tierMultiplier]);
+
+  const interiorGrandTotal = adjustedCostBreakdown.grand_total;
+  const structuralGrandTotal = structuralEstimates?.grand_total || 0;
+  const combinedGrandTotal = selectedTierData?.grand_total || (interiorGrandTotal + structuralGrandTotal);
+  const structuralTotalForDisplay = selectedTierData
+    ? Math.max(combinedGrandTotal - interiorGrandTotal, 0)
+    : structuralGrandTotal;
 
   if (!result) {
     return null;
@@ -121,7 +168,7 @@ export default function Results() {
     }
   }, [result, adjustedMaterials, adjustedCostBreakdown, selectedTier, isGeneratingPdf]);
 
-  const formattedTotal = `$${(adjustedCostBreakdown.grand_total || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  const formattedTotal = formatCurrency(combinedGrandTotal);
   const roomCount = result.rooms?.length || 0;
   const totalArea = (result.total_area || 0).toLocaleString();
 
@@ -165,7 +212,7 @@ export default function Results() {
       </section>
 
       <StickySummary
-        grandTotal={adjustedCostBreakdown.grand_total}
+        grandTotal={combinedGrandTotal}
         roomCount={roomCount}
         totalArea={result.total_area || 0}
       />
@@ -205,8 +252,57 @@ export default function Results() {
               costBreakdown={adjustedCostBreakdown}
               contingencyPercent={result.contingency_percent || 10}
               selectedTier={selectedTier}
+              structuralTotal={structuralTotalForDisplay}
+              combinedGrandTotal={combinedGrandTotal}
             />
 
+
+            {structuralEstimates && (
+              <div className="card-elevated p-5 animate-slide-up" style={{ animationDelay: '0.25s' }}>
+                <div className="flex items-center justify-between gap-4 mb-4">
+                  <div>
+                    <h3 className="font-semibold text-foreground">Structural Shell Estimate</h3>
+                    <p className="text-sm text-muted-foreground">Framing, foundation, and roofing costs based on NAHB 2024 benchmarks.</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Structural total</p>
+                    <p className="text-lg font-semibold font-mono text-foreground">{formatCurrency(structuralTotalForDisplay)}</p>
+                  </div>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-3">
+                  {([
+                    { title: 'Framing', data: structuralEstimates.framing, subtitle: 'Studs, plates, headers' },
+                    { title: 'Foundation', data: structuralEstimates.foundation, subtitle: 'Slab-on-grade' },
+                    { title: 'Roofing', data: structuralEstimates.roofing, subtitle: 'Gable roof, 4/12 pitch' },
+                  ] as const).map((item) => (
+                    <div key={item.title} className="rounded-xl border border-border bg-surface/60 p-4">
+                      <h4 className="text-sm font-semibold text-foreground">{item.title}</h4>
+                      <p className="text-xs text-muted-foreground">{item.subtitle}</p>
+                      <div className="mt-3 space-y-1 text-sm">
+                        <div className="flex justify-between text-muted-foreground">
+                          <span>Materials</span>
+                          <span className="font-mono">{formatCurrency(item.data.total_material)}</span>
+                        </div>
+                        <div className="flex justify-between text-muted-foreground">
+                          <span>Labor</span>
+                          <span className="font-mono">{formatCurrency(item.data.total_labor)}</span>
+                        </div>
+                        <div className="flex justify-between pt-2 border-t border-border font-semibold">
+                          <span>Total</span>
+                          <span className="font-mono">{formatCurrency(item.data.grand_total)}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <p className="text-xs text-muted-foreground">
+              Estimate includes structural shell (framing, foundation, roofing) and interior finishes. Excludes MEP
+              (electrical, plumbing, HVAC), site work, and land.
+            </p>
             <TierComparison
               tiers={result.tier_comparisons || []}
               currentTier={selectedTier}

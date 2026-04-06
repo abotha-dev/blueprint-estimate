@@ -35,6 +35,35 @@ export interface TierEstimate {
   labor_subtotal: number;
 }
 
+
+export interface StructuralLineItem {
+  quantity: number;
+  unit: string;
+  material_cost: number;
+  labor_cost: number;
+  total_cost: number;
+}
+
+export interface StructuralEstimateDetail {
+  line_items: Record<string, StructuralLineItem>;
+  total_material: number;
+  total_labor: number;
+  grand_total: number;
+}
+
+export interface RoofingEstimateDetail extends StructuralEstimateDetail {
+  roof_area_sqft?: number;
+}
+
+export interface StructuralEstimates {
+  framing: StructuralEstimateDetail;
+  foundation: StructuralEstimateDetail;
+  roofing: RoofingEstimateDetail;
+  subtotal_material: number;
+  subtotal_labor: number;
+  grand_total: number;
+}
+
 export interface AnalysisResult {
   project_name: string;
   filename: string;
@@ -43,6 +72,7 @@ export interface AnalysisResult {
   rooms: Room[];
   materials: MaterialItem[];
   cost_breakdown: CostBreakdown;
+  structural_estimates?: StructuralEstimates;
   tier_comparisons: TierEstimate[];
   warnings: string[];
   quality_tier: QualityTier;
