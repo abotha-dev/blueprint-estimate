@@ -101,6 +101,9 @@ export default function Analyze() {
             <p className="mt-3 text-[rgba(255,255,255,0.5)] leading-relaxed">
               Upload a floor plan image and get instant material + labor estimates.
             </p>
+            <p className="mt-2 text-xs text-[rgba(255,255,255,0.38)] leading-relaxed">
+              Beta: estimates cover structural shell, exterior finishes, and interior finishes. MEP, site work, permits, and land are excluded.
+            </p>
             {!user && (
               <p className="mt-2 text-xs text-[rgba(255,255,255,0.35)]">
                 {guestLimitReached

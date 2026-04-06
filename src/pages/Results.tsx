@@ -388,8 +388,8 @@ export default function Results() {
             )}
 
             <p className="text-xs text-muted-foreground">
-              Estimate includes structural shell, exterior finishes (windows, doors, siding), and interior finishes. Excludes MEP
-              (electrical, plumbing, HVAC), site work, and land.
+              Beta estimate includes structural shell, exterior finishes (windows, doors, siding), and interior finishes. Excludes MEP
+              (electrical, plumbing, HVAC), site work, permits, and land.
             </p>
             <TierComparison
               tiers={result.tier_comparisons || []}

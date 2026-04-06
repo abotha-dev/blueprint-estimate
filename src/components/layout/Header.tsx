@@ -27,9 +27,14 @@ export function Header() {
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center gap-2.5 group">
           <TakeoffLogo size={36} />
-          <span className="font-semibold text-lg text-[rgba(255,255,255,0.9)] group-hover:text-indigo-400 transition-[color] duration-150 ease-out">
-            Takeoff.ai
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-lg text-[rgba(255,255,255,0.9)] group-hover:text-indigo-400 transition-[color] duration-150 ease-out">
+              Takeoff.ai
+            </span>
+            <span className="rounded-full border border-indigo-400/30 bg-indigo-500/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.12em] text-indigo-300">
+              Beta
+            </span>
+          </div>
         </Link>
 
         <nav className="flex items-center gap-2">

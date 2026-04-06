@@ -112,8 +112,8 @@ const FEATURES = [
   },
   {
     icon: Target,
-    title: '~10% Accuracy',
-    description: 'Results comparable to manual takeoffs, delivered in under 60 seconds.',
+    title: 'Benchmark-Aligned Estimates',
+    description: 'Directional estimates aligned to industry benchmarks for structural, exterior, and interior scope — delivered in under 60 seconds.',
   },
   {
     icon: CheckCircle,
@@ -131,9 +131,14 @@ export default function Home() {
         <div className="container flex h-16 items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5 group">
             <TakeoffLogo size={36} />
-            <span className="font-semibold text-lg text-white group-hover:text-indigo-400 transition-colors">
-              Takeoff.ai
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-lg text-white group-hover:text-indigo-400 transition-colors">
+                Takeoff.ai
+              </span>
+              <span className="rounded-full border border-indigo-400/30 bg-indigo-500/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.12em] text-indigo-300">
+                Beta
+              </span>
+            </div>
           </Link>
           <nav className="flex items-center gap-2">
             <Link to="/pricing">
