@@ -297,11 +297,11 @@ export async function createCheckoutSession(params: {
 }
 
 export function validateFile(file: File): { valid: boolean; error?: string } {
-  const MAX_SIZE = 10 * 1024 * 1024; // 10MB
-  const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/webp'];
+  const MAX_SIZE = 25 * 1024 * 1024; // 25MB (PDFs can be larger)
+  const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'application/pdf'];
 
   if (!ALLOWED_TYPES.includes(file.type)) {
-    return { valid: false, error: 'Please upload a PNG, JPG, or WEBP image.' };
+    return { valid: false, error: 'Please upload a PNG, JPG, WEBP, or PDF file.' };
   }
 
   if (file.size > MAX_SIZE) {

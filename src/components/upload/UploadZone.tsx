@@ -79,7 +79,7 @@ export function UploadZone({ onFileSelect, selectedFile, filePreview, onClear, d
     >
       <input
         type="file"
-        accept="image/png,image/jpeg,image/webp"
+        accept="image/png,image/jpeg,image/webp,application/pdf"
         onChange={handleChange}
         disabled={disabled}
         className="sr-only"
@@ -95,7 +95,7 @@ export function UploadZone({ onFileSelect, selectedFile, filePreview, onClear, d
           {isDragActive ? 'Drop your floor plan here' : 'Drag and drop your floor plan here'}
         </p>
         <p className="text-sm text-[rgba(255,255,255,0.5)] mb-4">or click to browse</p>
-        <p className="text-xs text-[rgba(255,255,255,0.3)]">PNG, JPG, WEBP up to 10MB</p>
+        <p className="text-xs text-[rgba(255,255,255,0.3)]">PNG, JPG, WEBP, PDF up to 25MB</p>
       </div>
     </label>
   );
