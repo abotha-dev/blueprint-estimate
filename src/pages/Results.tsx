@@ -13,8 +13,6 @@ import { generatePDFReport } from '@/services/api';
 import { AlertCircle } from 'lucide-react';
 
 const formatCurrency = (value: number) => `$$${(value || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-const formatExteriorLabel = (value: string) => value.split("_").map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join(" ");
-
 export default function Results() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -85,8 +83,6 @@ export default function Results() {
   }, [result?.cost_breakdown, result?.contingency_percent, tierMultiplier]);
 
 
-  const selectedTierData = result.tier_comparisons?.find(t => t.tier === selectedTier);
-
   const structuralEstimates = useMemo(() => {
     if (!result?.structural_estimates) return null;
 
@@ -127,37 +123,12 @@ export default function Results() {
     };
   }, [result?.structural_estimates, tierMultiplier]);
 
-  const exteriorEstimates = useMemo(() => {
-    if (!result?.exterior_estimates) return null;
 
-    const multiplier = tierMultiplier;
-    const line_items = Object.fromEntries(
-      Object.entries(result.exterior_estimates.line_items || {}).map(([key, item]: any) => [
-        key,
-        {
-          ...item,
-          material_cost: (item.material_cost || 0) * multiplier,
-          labor_cost: (item.labor_cost || 0) * multiplier,
-          total_cost: (item.total_cost || 0) * multiplier,
-        },
-      ])
-    );
-
-    return {
-      ...result.exterior_estimates,
-      line_items,
-      total_material: (result.exterior_estimates.total_material || 0) * multiplier,
-      total_labor: (result.exterior_estimates.total_labor || 0) * multiplier,
-      grand_total: (result.exterior_estimates.grand_total || 0) * multiplier,
-    };
-  }, [result?.exterior_estimates, tierMultiplier]);
 
   const interiorGrandTotal = adjustedCostBreakdown.grand_total;
   const structuralGrandTotal = structuralEstimates?.grand_total || 0;
-  const exteriorGrandTotal = exteriorEstimates?.grand_total || 0;
-  const combinedGrandTotal = selectedTierData?.grand_total || (interiorGrandTotal + structuralGrandTotal + exteriorGrandTotal);
+  const combinedGrandTotal = interiorGrandTotal + structuralGrandTotal;
   const structuralTotalForDisplay = structuralGrandTotal;
-  const exteriorTotalForDisplay = exteriorGrandTotal;
 
   if (!result) {
     return null;
@@ -279,7 +250,6 @@ export default function Results() {
               contingencyPercent={result.contingency_percent || 10}
               selectedTier={selectedTier}
               structuralTotal={structuralTotalForDisplay}
-              exteriorTotal={exteriorTotalForDisplay}
               combinedGrandTotal={combinedGrandTotal}
             />
 
@@ -326,70 +296,9 @@ export default function Results() {
               </div>
             )}
 
-            {exteriorEstimates && (
-              <div className="card-elevated p-5 animate-slide-up" style={{ animationDelay: '0.3s' }}>
-                <div className="flex items-center justify-between gap-4 mb-4">
-                  <div>
-                    <h3 className="font-semibold text-foreground">Exterior Finishes Estimate</h3>
-                    <p className="text-sm text-muted-foreground">Windows, doors, siding, and trim based on room mix and perimeter.</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Exterior total</p>
-                    <p className="text-lg font-semibold font-mono text-foreground">{formatCurrency(exteriorTotalForDisplay)}</p>
-                  </div>
-                </div>
-
-                <div className="grid gap-3 md:grid-cols-4 text-sm text-muted-foreground mb-4">
-                  <div>
-                    <span className="block text-xs uppercase tracking-[0.2em]">Windows</span>
-                    <span className="font-mono text-foreground">{exteriorEstimates.window_count}</span>
-                  </div>
-                  <div>
-                    <span className="block text-xs uppercase tracking-[0.2em]">Exterior doors</span>
-                    <span className="font-mono text-foreground">{exteriorEstimates.exterior_door_count}</span>
-                  </div>
-                  <div>
-                    <span className="block text-xs uppercase tracking-[0.2em]">Interior doors</span>
-                    <span className="font-mono text-foreground">{exteriorEstimates.interior_door_count}</span>
-                  </div>
-                  <div>
-                    <span className="block text-xs uppercase tracking-[0.2em]">Wall area</span>
-                    <span className="font-mono text-foreground">{exteriorEstimates.wall_area_sqft.toLocaleString()} sqft</span>
-                  </div>
-                </div>
-
-                <div className="overflow-x-auto rounded-xl border border-border">
-                  <table className="w-full text-sm">
-                    <thead className="bg-muted/50 text-muted-foreground">
-                      <tr>
-                        <th className="px-3 py-2 text-left">Item</th>
-                        <th className="px-3 py-2 text-right">Qty</th>
-                        <th className="px-3 py-2 text-right">Materials</th>
-                        <th className="px-3 py-2 text-right">Labor</th>
-                        <th className="px-3 py-2 text-right">Total</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {Object.entries(exteriorEstimates.line_items || {}).map(([key, item]: any) => (
-                        <tr key={key} className="border-t border-border">
-                          <td className="px-3 py-2 font-medium text-foreground">{formatExteriorLabel(key)}</td>
-                          <td className="px-3 py-2 text-right font-mono text-muted-foreground">
-                            {item.quantity} {item.unit}
-                          </td>
-                          <td className="px-3 py-2 text-right font-mono">{formatCurrency(item.material_cost)}</td>
-                          <td className="px-3 py-2 text-right font-mono">{formatCurrency(item.labor_cost)}</td>
-                          <td className="px-3 py-2 text-right font-mono font-semibold">{formatCurrency(item.total_cost)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            )}
-
             <p className="text-xs text-muted-foreground">
-              Beta estimate includes structural shell, exterior finishes (windows, doors, siding), and interior finishes. Excludes MEP
-              (electrical, plumbing, HVAC), site work, permits, and land.
+              Estimate includes structural shell (framing, foundation, roofing) and interior finishes. Excludes MEP
+              (electrical, plumbing, HVAC), site work, and land.
             </p>
             <TierComparison
               tiers={result.tier_comparisons || []}
