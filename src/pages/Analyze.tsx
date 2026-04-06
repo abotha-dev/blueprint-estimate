@@ -86,13 +86,13 @@ export default function Analyze() {
   return (
     <Layout hideFooter>
       <div className="relative overflow-hidden bg-[#0A0A0A] text-[rgba(255,255,255,0.9)]">
-        <div className="absolute inset-0 bg-gradient-to-b from-indigo-600/10 via-transparent to-transparent" aria-hidden="true" />
-        <div className="absolute -top-40 left-1/2 h-[420px] w-[900px] -translate-x-1/2 rounded-full bg-indigo-600/10 blur-[120px]" aria-hidden="true" />
+        <div className="absolute inset-0 bg-gradient-to-b from-blue-600/10 via-transparent to-transparent" aria-hidden="true" />
+        <div className="absolute -top-40 left-1/2 h-[420px] w-[900px] -translate-x-1/2 rounded-full bg-blue-600/10 blur-[120px]" aria-hidden="true" />
 
         <div className="container py-12 md:py-20">
           <div className="max-w-3xl mx-auto text-center mb-10">
             <div className="inline-flex items-center gap-2 rounded-badge border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.04)] px-3 py-1.5 text-xs text-[rgba(255,255,255,0.7)]">
-              <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
+              <span className="h-1.5 w-1.5 rounded-full bg-blue-400" />
               Step 1 · Upload your blueprint
             </div>
             <h1 className="mt-5 text-3xl md:text-4xl font-bold" style={{ letterSpacing: '-0.03em' }}>

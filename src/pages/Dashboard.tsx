@@ -14,8 +14,8 @@ import { UploadHistory } from '@/hooks/useAuth';
 
 const SUBSCRIPTION_LABELS: Record<string, { label: string; color: string }> = {
   free: { label: 'Free', color: 'bg-[rgba(255,255,255,0.04)] text-[rgba(255,255,255,0.5)] border border-[rgba(255,255,255,0.08)]' },
-  pro: { label: 'Pro', color: 'bg-indigo-600 text-white' },
-  agency: { label: 'Agency', color: 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30' },
+  pro: { label: 'Pro', color: 'bg-blue-600 text-white' },
+  agency: { label: 'Agency', color: 'bg-blue-500/20 text-blue-300 border border-blue-500/30' },
 };
 
 export default function Dashboard() {
@@ -81,7 +81,7 @@ export default function Dashboard() {
               {/* Account Card */}
               <div className="bg-[#18181B] border border-[rgba(255,255,255,0.08)] rounded-card p-6 shadow-card">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="flex items-center justify-center w-10 h-10 rounded-card bg-indigo-500/10 text-indigo-400">
+                  <div className="flex items-center justify-center w-10 h-10 rounded-card bg-blue-500/10 text-blue-400">
                     <User className="w-5 h-5" strokeWidth={1.5} />
                   </div>
                   <h2 className="text-lg font-semibold" style={{ letterSpacing: '-0.02em' }}>Account</h2>
@@ -103,7 +103,7 @@ export default function Dashboard() {
               {/* Subscription Card */}
               <div className="bg-[#18181B] border border-[rgba(255,255,255,0.08)] rounded-card p-6 shadow-card">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="flex items-center justify-center w-10 h-10 rounded-card bg-indigo-500/10 text-indigo-400">
+                  <div className="flex items-center justify-center w-10 h-10 rounded-card bg-blue-500/10 text-blue-400">
                     <CreditCard className="w-5 h-5" strokeWidth={1.5} />
                   </div>
                   <h2 className="text-lg font-semibold" style={{ letterSpacing: '-0.02em' }}>Subscription</h2>
@@ -136,7 +136,7 @@ export default function Dashboard() {
             <div className="mt-8">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center justify-center w-10 h-10 rounded-card bg-indigo-500/10 text-indigo-400">
+                  <div className="flex items-center justify-center w-10 h-10 rounded-card bg-blue-500/10 text-blue-400">
                     <FileText className="w-5 h-5" strokeWidth={1.5} />
                   </div>
                   <h2 className="text-lg font-semibold" style={{ letterSpacing: '-0.02em' }}>Estimates This Month</h2>

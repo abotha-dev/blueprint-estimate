@@ -17,7 +17,7 @@ export function StickySummary({ grandTotal, roomCount, totalArea }: StickySummar
           </div>
 
           <div className="flex items-center gap-2">
-            <DollarSign className="w-5 h-5 text-indigo-400" />
+            <DollarSign className="w-5 h-5 text-blue-400" />
             <span className="text-xl md:text-2xl font-bold font-mono text-white">
               ${(grandTotal || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </span>

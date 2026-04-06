@@ -87,7 +87,7 @@ export function UploadZone({ onFileSelect, selectedFile, filePreview, onClear, d
       <div className="flex flex-col items-center text-center">
         <div className={cn(
           "w-14 h-14 rounded-card flex items-center justify-center mb-4 transition-[background-color,color] duration-150 ease-out",
-          isDragActive ? "bg-indigo-600 text-white" : "bg-[rgba(255,255,255,0.04)] text-[rgba(255,255,255,0.5)]"
+          isDragActive ? "bg-blue-600 text-white" : "bg-[rgba(255,255,255,0.04)] text-[rgba(255,255,255,0.5)]"
         )}>
           <Upload className="w-6 h-6" strokeWidth={1.5} />
         </div>

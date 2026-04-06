@@ -1,89 +1,8 @@
 import { Link } from 'react-router-dom';
 import { TakeoffLogo } from '@/components/ui/TakeoffLogo';
-import { ArrowRight, Upload, Cpu, FileSpreadsheet, CheckCircle, Zap, Target, Clock, DollarSign, Ruler } from 'lucide-react';
+import { ArrowRight, Upload, Cpu, FileSpreadsheet, CheckCircle, Zap, Target } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-
-/* ─── Animated Estimator Preview ────────────────────────── */
-function EstimatorPreview() {
-  return (
-    <div className="relative w-full max-w-4xl mx-auto">
-      {/* Glow behind the preview */}
-      <div className="absolute -inset-4 bg-indigo-500/10 rounded-3xl blur-3xl" aria-hidden="true" />
-      
-      <div className="relative rounded-xl border border-white/10 bg-[#0f1219] shadow-2xl overflow-hidden">
-        {/* Browser chrome */}
-        <div className="flex items-center gap-2 px-4 py-3 border-b border-white/5 bg-[#0a0d14]">
-          <div className="flex gap-1.5">
-            <div className="w-3 h-3 rounded-full bg-red-500/60" />
-            <div className="w-3 h-3 rounded-full bg-yellow-500/60" />
-            <div className="w-3 h-3 rounded-full bg-green-500/60" />
-          </div>
-          <div className="flex-1 flex justify-center">
-            <div className="px-4 py-1 rounded-md bg-white/5 text-xs text-white/30 font-mono">
-              takeoff.ai/analyze
-            </div>
-          </div>
-        </div>
-
-        {/* App content */}
-        <div className="p-6 md:p-8 space-y-6">
-          {/* Upload area - animated */}
-          <div className="animate-preview-fade-1 rounded-xl border-2 border-dashed border-indigo-500/30 bg-indigo-500/5 p-8 text-center">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-indigo-500/10 mb-3">
-              <Upload className="w-6 h-6 text-indigo-400" />
-            </div>
-            <p className="text-sm text-white/60">floor-plan-office-3rd.png uploaded</p>
-            <div className="mt-3 h-1.5 w-full max-w-xs mx-auto rounded-full bg-white/5 overflow-hidden">
-              <div className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 animate-progress-fill" />
-            </div>
-          </div>
-
-          {/* Results grid - animated stagger */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {[
-              { label: 'Rooms Detected', value: '12', icon: Ruler, delay: '1' },
-              { label: 'Total Sq. Ft.', value: '2,840', icon: Target, delay: '2' },
-              { label: 'Est. Time', value: '47s', icon: Clock, delay: '3' },
-              { label: 'Material Cost', value: '$18,420', icon: DollarSign, delay: '4' },
-            ].map((stat) => (
-              <div
-                key={stat.label}
-                className={`animate-preview-fade-${stat.delay} rounded-lg border border-white/5 bg-white/[0.02] p-4`}
-              >
-                <stat.icon className="w-4 h-4 text-indigo-400 mb-2" />
-                <div className="text-lg font-bold text-white font-mono">{stat.value}</div>
-                <div className="text-xs text-white/40 mt-0.5">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-
-          {/* Cost breakdown row - animated */}
-          <div className="animate-preview-fade-5 rounded-lg border border-white/5 bg-white/[0.02] overflow-hidden">
-            <div className="px-4 py-2 border-b border-white/5 flex items-center justify-between">
-              <span className="text-xs font-medium text-white/60">Room Breakdown</span>
-              <span className="text-xs text-indigo-400 font-mono">12 rooms</span>
-            </div>
-            <div className="divide-y divide-white/5">
-              {[
-                { room: 'Open Office', sqft: '680 sq ft', cost: '$4,210' },
-                { room: 'Conference Room A', sqft: '320 sq ft', cost: '$2,860' },
-                { room: 'Kitchen / Break Room', sqft: '240 sq ft', cost: '$3,150' },
-              ].map((row) => (
-                <div key={row.room} className="flex items-center justify-between px-4 py-2.5">
-                  <span className="text-sm text-white/70">{row.room}</span>
-                  <div className="flex items-center gap-4">
-                    <span className="text-xs text-white/30 font-mono">{row.sqft}</span>
-                    <span className="text-sm font-medium text-white font-mono">{row.cost}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+import { BlueprintHero } from '@/components/home/BlueprintHero';
 
 /* ─── Steps ─────────────────────────────────────────────── */
 const STEPS = [
@@ -132,10 +51,10 @@ export default function Home() {
           <Link to="/" className="flex items-center gap-2.5 group">
             <TakeoffLogo size={36} />
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-lg text-white group-hover:text-indigo-400 transition-colors">
+              <span className="font-semibold text-lg text-white group-hover:text-blue-400 transition-colors">
                 Takeoff.ai
               </span>
-              <span className="rounded-full border border-indigo-400/20 bg-indigo-500/8 px-2 py-0.5 text-[10px] font-semibold tracking-[0.14em] text-indigo-400/90" style={{fontVariantCaps: 'small-caps', letterSpacing: '0.12em'}}>
+              <span className="rounded-full border border-blue-400/20 bg-blue-500/8 px-2 py-0.5 text-[10px] font-semibold tracking-[0.14em] text-blue-400/90" style={{fontVariantCaps: 'small-caps', letterSpacing: '0.12em'}}>
                 BETA
               </span>
             </div>
@@ -152,7 +71,7 @@ export default function Home() {
               </Button>
             </Link>
             <Link to="/signup">
-              <Button size="sm" className="bg-indigo-600 hover:bg-indigo-500 text-white border-0">
+              <Button size="sm" className="bg-blue-600 hover:bg-blue-500 text-white border-0">
                 Sign up
               </Button>
             </Link>
@@ -163,13 +82,13 @@ export default function Home() {
       {/* Hero */}
       <section className="relative py-20 md:py-28 overflow-hidden">
         {/* Background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-indigo-600/5 via-transparent to-transparent" aria-hidden="true" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-indigo-600/8 rounded-full blur-[120px]" aria-hidden="true" />
+        <div className="absolute inset-0 bg-gradient-to-b from-blue-600/5 via-transparent to-transparent" aria-hidden="true" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-blue-600/8 rounded-full blur-[120px]" aria-hidden="true" />
 
         <div className="container relative z-10">
           <div className="max-w-3xl mx-auto text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-indigo-500/20 bg-indigo-500/5 text-xs text-indigo-300 mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-blue-500/20 bg-blue-500/5 text-xs text-blue-300 mb-6">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
               AI-powered construction estimating
             </div>
             <h1
@@ -189,7 +108,7 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/analyze">
-                <Button size="lg" className="w-full sm:w-auto gap-2 text-base bg-indigo-600 hover:bg-indigo-500 text-white border-0 shadow-lg shadow-indigo-600/20">
+                <Button size="lg" className="w-full sm:w-auto gap-2 text-base bg-blue-600 hover:bg-blue-500 text-white border-0 shadow-lg shadow-blue-600/20">
                   Try it free
                   <ArrowRight className="w-4 h-4" />
                 </Button>
@@ -202,8 +121,8 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Animated product preview */}
-          <EstimatorPreview />
+          {/* Blueprint hero */}
+          <BlueprintHero />
         </div>
       </section>
 
@@ -226,10 +145,10 @@ export default function Home() {
                   <div className="hidden md:block absolute top-10 left-[60%] w-[80%] h-px bg-white/5" />
                 )}
                 <div className="relative inline-block mb-4">
-                  <div className="w-20 h-20 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center justify-center group-hover:bg-indigo-500/10 group-hover:border-indigo-500/20 transition-all">
-                    <step.icon className="w-8 h-8 text-indigo-400" />
+                  <div className="w-20 h-20 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center justify-center group-hover:bg-blue-500/10 group-hover:border-blue-500/20 transition-all">
+                    <step.icon className="w-8 h-8 text-blue-400" />
                   </div>
-                  <span className="absolute -top-1 -right-1 inline-flex items-center justify-center w-6 h-6 rounded-full bg-indigo-600 text-white text-xs font-bold shadow-md">
+                  <span className="absolute -top-1 -right-1 inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-600 text-white text-xs font-bold shadow-md">
                     {index + 1}
                   </span>
                 </div>
@@ -250,9 +169,9 @@ export default function Home() {
         <div className="container">
           <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             {FEATURES.map((feature, index) => (
-              <div key={index} className="rounded-xl border border-white/5 bg-white/[0.02] p-6 text-center hover:border-indigo-500/20 hover:bg-indigo-500/5 transition-all">
-                <div className="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center mx-auto mb-4">
-                  <feature.icon className="w-6 h-6 text-indigo-400" />
+              <div key={index} className="rounded-xl border border-white/5 bg-white/[0.02] p-6 text-center hover:border-blue-500/20 hover:bg-blue-500/5 transition-all">
+                <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center mx-auto mb-4">
+                  <feature.icon className="w-6 h-6 text-blue-400" />
                 </div>
                 <h3 className="font-semibold text-white mb-2">
                   {feature.title}
@@ -293,15 +212,15 @@ export default function Home() {
             </div>
 
             {/* Validation callout */}
-            <div className="rounded-2xl border border-indigo-500/20 bg-indigo-500/5 px-6 py-5 flex flex-col md:flex-row md:items-center gap-4">
+            <div className="rounded-2xl border border-blue-500/20 bg-blue-500/5 px-6 py-5 flex flex-col md:flex-row md:items-center gap-4">
               <div className="flex-1">
                 <p className="text-sm font-semibold text-white mb-1">Validated against real blueprints</p>
                 <p className="text-xs text-white/40 leading-relaxed">
                   A 1,124 sq ft residential permit blueprint estimated at <span className="text-white/70 font-medium">$118,817</span> — within the contractor reference range of $78k–$162k for this home size and scope.
                 </p>
               </div>
-              <div className="shrink-0 flex items-center gap-2 text-xs text-indigo-300 font-medium">
-                <span className="w-1.5 h-1.5 rounded-full bg-indigo-400" />
+              <div className="shrink-0 flex items-center gap-2 text-xs text-blue-300 font-medium">
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
                 Source: NAHB 2024 + HomeAdvisor
               </div>
             </div>
@@ -320,7 +239,7 @@ export default function Home() {
               No signup required. Upload a blueprint and see results in under a minute.
             </p>
             <Link to="/analyze">
-              <Button size="lg" className="gap-2 bg-indigo-600 hover:bg-indigo-500 text-white border-0 shadow-lg shadow-indigo-600/20">
+              <Button size="lg" className="gap-2 bg-blue-600 hover:bg-blue-500 text-white border-0 shadow-lg shadow-blue-600/20">
                 Get started free
                 <ArrowRight className="w-4 h-4" />
               </Button>

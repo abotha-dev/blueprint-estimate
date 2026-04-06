@@ -201,21 +201,21 @@ export default function Results() {
   return (
     <Layout hideFooter>
       {isGuest && (
-        <div className="w-full bg-indigo-600/90 text-white text-sm text-center py-2.5 px-4">
+        <div className="w-full bg-blue-600/90 text-white text-sm text-center py-2.5 px-4">
           You're viewing a guest analysis.{' '}
           <a href="/signup" className="underline font-medium hover:text-white/80">Sign up free</a>{' '}
           to save results, run unlimited analyses, and access your history.
         </div>
       )}
       <section className="relative overflow-hidden border-b border-white/10 bg-[#0a0d14] text-white">
-        <div className="absolute inset-0 bg-gradient-to-b from-indigo-600/10 via-transparent to-transparent" aria-hidden="true" />
-        <div className="absolute -top-36 left-1/2 h-[360px] w-[820px] -translate-x-1/2 rounded-full bg-indigo-600/10 blur-[120px]" aria-hidden="true" />
+        <div className="absolute inset-0 bg-gradient-to-b from-blue-600/10 via-transparent to-transparent" aria-hidden="true" />
+        <div className="absolute -top-36 left-1/2 h-[360px] w-[820px] -translate-x-1/2 rounded-full bg-blue-600/10 blur-[120px]" aria-hidden="true" />
 
         <div className="container py-10 md:py-14">
           <div className="max-w-4xl mx-auto flex flex-col md:flex-row md:items-end md:justify-between gap-6">
             <div>
               <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white/70">
-                <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
+                <span className="h-1.5 w-1.5 rounded-full bg-blue-400" />
                 Estimate complete
               </div>
               <h1 className="mt-4 text-3xl md:text-4xl font-bold tracking-tight">

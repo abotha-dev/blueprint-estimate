@@ -110,8 +110,8 @@ export default function Pricing() {
   return (
     <Layout>
       <div className="relative overflow-hidden bg-[#0A0A0A] text-[rgba(255,255,255,0.9)]">
-        <div className="absolute inset-0 bg-gradient-to-b from-indigo-600/8 via-transparent to-transparent" aria-hidden="true" />
-        <div className="absolute -top-40 left-1/2 h-[420px] w-[900px] -translate-x-1/2 rounded-full bg-indigo-600/10 blur-[120px]" aria-hidden="true" />
+        <div className="absolute inset-0 bg-gradient-to-b from-blue-600/8 via-transparent to-transparent" aria-hidden="true" />
+        <div className="absolute -top-40 left-1/2 h-[420px] w-[900px] -translate-x-1/2 rounded-full bg-blue-600/10 blur-[120px]" aria-hidden="true" />
 
         <div className="container relative mx-auto px-4 py-20 md:py-24">
           {/* Header */}
@@ -138,7 +138,7 @@ export default function Pricing() {
               isAnnual ? "text-[rgba(255,255,255,0.9)]" : "text-[rgba(255,255,255,0.5)]"
             )}>
               Annual
-              <span className="ml-2 text-xs bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded-badge">
+              <span className="ml-2 text-xs bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded-badge">
                 Save 20%
               </span>
             </Label>
@@ -156,13 +156,13 @@ export default function Pricing() {
                   className={cn(
                     "relative rounded-card border bg-[#18181B] p-8 flex flex-col shadow-card",
                     plan.popular
-                      ? "border-indigo-500/40 ring-1 ring-indigo-500/20 scale-105"
+                      ? "border-blue-500/40 ring-1 ring-blue-500/20 scale-105"
                       : "border-[rgba(255,255,255,0.08)]"
                   )}
                 >
                   {plan.popular && (
                     <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                      <span className="bg-indigo-600 text-white text-sm font-medium px-4 py-1 rounded-badge">
+                      <span className="bg-blue-600 text-white text-sm font-medium px-4 py-1 rounded-badge">
                         Most Popular
                       </span>
                     </div>
@@ -172,7 +172,7 @@ export default function Pricing() {
                     <div className={cn(
                       "w-12 h-12 rounded-card flex items-center justify-center mb-4",
                       plan.popular
-                        ? "bg-indigo-600 text-white"
+                        ? "bg-blue-600 text-white"
                         : "bg-[rgba(255,255,255,0.04)] text-[rgba(255,255,255,0.5)]"
                     )}>
                       {plan.icon}
@@ -200,7 +200,7 @@ export default function Pricing() {
                   <ul className="space-y-3 mb-8 flex-1">
                     {plan.features.map((feature) => (
                       <li key={feature} className="flex items-start gap-3">
-                        <Check className="w-5 h-5 text-indigo-400 shrink-0 mt-0.5" strokeWidth={1.5} />
+                        <Check className="w-5 h-5 text-blue-400 shrink-0 mt-0.5" strokeWidth={1.5} />
                         <span className="text-sm text-[rgba(255,255,255,0.7)]">{feature}</span>
                       </li>
                     ))}
