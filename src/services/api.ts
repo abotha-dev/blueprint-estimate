@@ -1,4 +1,4 @@
-import { AnalysisResult, AnalysisSettings, Room, MaterialItem, CostBreakdown, TierEstimate, StructuralEstimates } from '@/types';
+import { AnalysisResult, AnalysisSettings, Room, MaterialItem, CostBreakdown, TierEstimate, StructuralEstimates, ExteriorEstimates } from '@/types';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://takeoff-api-uyzv.onrender.com';
 
@@ -54,6 +54,7 @@ function transformApiResponse(data: any): AnalysisResult {
   const materialTotals = data.material_totals || {};
   const qualityComparison = data.quality_comparison || {};
   const structuralEstimates = data.structural_estimates || null;
+  const exteriorEstimates = data.exterior_estimates || null;
   
   // Transform rooms - backend returns strings for dimensions and area
   const rooms: Room[] = (analysis.rooms || []).map((room: any) => {
@@ -107,6 +108,7 @@ function transformApiResponse(data: any): AnalysisResult {
   // Build the result with defaults for missing fields
   const result: AnalysisResult = {
     structural_estimates: structuralEstimates as StructuralEstimates | null,
+    exterior_estimates: exteriorEstimates as ExteriorEstimates | null,
     project_name: costEstimate.project_name || data.project_name || 'Untitled Project',
     filename: analysis.filename || 'Unknown File',
     total_area: totalArea,

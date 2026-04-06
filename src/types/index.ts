@@ -55,6 +55,26 @@ export interface RoofingEstimateDetail extends StructuralEstimateDetail {
   roof_area_sqft?: number;
 }
 
+
+export interface ExteriorLineItem {
+  quantity: number;
+  unit: string;
+  material_cost: number;
+  labor_cost: number;
+  total_cost: number;
+}
+
+export interface ExteriorEstimates {
+  window_count: number;
+  exterior_door_count: number;
+  interior_door_count: number;
+  wall_area_sqft: number;
+  line_items: Record<string, ExteriorLineItem>;
+  total_material: number;
+  total_labor: number;
+  grand_total: number;
+}
+
 export interface StructuralEstimates {
   framing: StructuralEstimateDetail;
   foundation: StructuralEstimateDetail;
@@ -73,6 +93,7 @@ export interface AnalysisResult {
   materials: MaterialItem[];
   cost_breakdown: CostBreakdown;
   structural_estimates?: StructuralEstimates;
+  exterior_estimates?: ExteriorEstimates;
   tier_comparisons: TierEstimate[];
   warnings: string[];
   quality_tier: QualityTier;
