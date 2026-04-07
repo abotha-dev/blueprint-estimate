@@ -12,7 +12,7 @@ import { AnalysisResult, QualityTier, MaterialItem, CostBreakdown } from '@/type
 import { generatePDFReport } from '@/services/api';
 import { AlertCircle } from 'lucide-react';
 
-const formatCurrency = (value: number) => `$$${(value || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+const formatCurrency = (value: number) => `$${(value || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 export default function Results() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -57,8 +57,6 @@ export default function Results() {
     }));
   }, [result?.materials, tierMultiplier]);
 
-  const adjustedMepEstimate = useMemo(() => (result?.mep_breakdown?.mep_estimate || 0) * tierMultiplier, [result?.mep_breakdown?.mep_estimate, tierMultiplier]);
-
   const adjustedCostBreakdown = useMemo((): CostBreakdown => {
     if (!result?.cost_breakdown) {
       return {
@@ -80,10 +78,11 @@ export default function Results() {
       labor_subtotal: laborSubtotal,
       subtotal: subtotal,
       contingency_amount: contingencyAmount,
-      grand_total: subtotal + contingencyAmount + adjustedMepEstimate,
+      grand_total: subtotal + contingencyAmount,
     };
-  }, [result?.cost_breakdown, result?.contingency_percent, adjustedMepEstimate, tierMultiplier]);
+  }, [result?.cost_breakdown, result?.contingency_percent, tierMultiplier]);
 
+  const adjustedMepEstimate = useMemo(() => (result?.mep_breakdown?.mep_estimate || 0) * tierMultiplier, [result?.mep_breakdown?.mep_estimate, tierMultiplier]);
 
   const structuralEstimates = useMemo(() => {
     if (!result?.structural_estimates) return null;
@@ -279,6 +278,14 @@ export default function Results() {
                       <h4 className="text-sm font-semibold text-foreground">{item.title}</h4>
                       <p className="text-xs text-muted-foreground">{item.subtitle}</p>
                       <div className="mt-3 space-y-1 text-sm">
+                        <div className="space-y-1 rounded-lg border border-border/60 bg-background/30 p-3 text-xs">
+                          {Object.entries(item.data.line_items || {}).map(([key, lineItem]: any) => (
+                            <div key={key} className="flex justify-between gap-3 text-muted-foreground">
+                              <span className="capitalize">{key.replace(/_/g, ' ')}</span>
+                              <span className="font-mono text-right text-foreground">{formatCurrency(lineItem.total_cost || 0)}</span>
+                            </div>
+                          ))}
+                        </div>
                         <div className="flex justify-between text-muted-foreground">
                           <span>Materials</span>
                           <span className="font-mono">{formatCurrency(item.data.total_material)}</span>
@@ -310,7 +317,7 @@ export default function Results() {
             )}
 
             <p className="text-xs text-muted-foreground">
-              Estimate includes structural shell (framing, foundation, roofing) and interior finishes.{result.mep_breakdown ? ' Includes a rough MEP allowance (electrical, plumbing, HVAC).' : ' Excludes MEP (electrical, plumbing, HVAC).'} Excludes site work and land.
+              Estimate includes structural shell (framing, foundation, roofing) and interior finishes. Excludes MEP (electrical, plumbing, HVAC), site work, and land.
             </p>
             <TierComparison
               tiers={result.tier_comparisons || []}
