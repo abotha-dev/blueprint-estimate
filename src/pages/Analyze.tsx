@@ -11,7 +11,6 @@ import { useAuthContext } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
-const GUEST_LIMIT = 2;
 const GUEST_COUNT_KEY = 'takeoff_guest_analyses';
 
 function getGuestCount(): number {
@@ -37,19 +36,7 @@ export default function Analyze() {
     updateSettings,
   } = useAnalysis();
 
-  const guestCount = getGuestCount();
-  const guestLimitReached = !user && guestCount >= GUEST_LIMIT;
-
   const handleAnalyze = async () => {
-    if (guestLimitReached) {
-      toast({
-        title: 'Free limit reached',
-        description: 'Sign up for free to run unlimited analyses and save your results.',
-      });
-      navigate('/signup');
-      return;
-    }
-
     const result = await analyze();
     if (result) {
       // Save history only for logged-in users
@@ -106,9 +93,7 @@ export default function Analyze() {
             </p>
             {!user && (
               <p className="mt-2 text-xs text-[rgba(255,255,255,0.35)]">
-                {guestLimitReached
-                  ? "You've used your free analyses. Sign up to continue."
-                  : `Free guest analysis — ${GUEST_LIMIT - guestCount} of ${GUEST_LIMIT} remaining. No account needed.`}
+                No account needed to try. Create a free account to unlock full cost breakdowns.
               </p>
             )}
           </div>
@@ -134,20 +119,20 @@ export default function Analyze() {
                         selectedFile={selectedFile}
                         filePreview={filePreview}
                         onClear={reset}
-                        disabled={isLoading || guestLimitReached}
+                        disabled={isLoading}
                       />
                       <SettingsPanel
                         settings={settings}
                         onUpdate={updateSettings}
-                        disabled={isLoading || guestLimitReached}
+                        disabled={isLoading}
                       />
                       <Button
                         onClick={handleAnalyze}
-                        disabled={!selectedFile || isLoading || guestLimitReached}
+                        disabled={!selectedFile || isLoading}
                         size="lg"
                         className="w-full gap-2"
                       >
-                        {guestLimitReached ? 'Sign Up to Continue' : 'Analyze Blueprint'}
+                        Analyze Blueprint
                         <ArrowRight className="w-4 h-4" strokeWidth={1.5} />
                       </Button>
                     </>

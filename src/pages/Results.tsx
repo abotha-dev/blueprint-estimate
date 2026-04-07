@@ -8,9 +8,11 @@ import { CostTable } from '@/components/results/CostTable';
 import { TierComparison } from '@/components/results/TierComparison';
 import { ResultActions } from '@/components/results/ResultActions';
 import { AnalysisSettings } from '@/components/results/AnalysisSettings';
+import { PaywallOverlay } from '@/components/results/PaywallOverlay';
 import { AnalysisResult, QualityTier, MaterialItem, CostBreakdown } from '@/types';
 import { generatePDFReport } from '@/services/api';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, ArrowRight, RefreshCw } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const formatCurrency = (value: number) => `$${(value || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 export default function Results() {
@@ -174,9 +176,9 @@ export default function Results() {
     <Layout hideFooter>
       {isGuest && (
         <div className="w-full bg-blue-600/90 text-white text-sm text-center py-2.5 px-4">
-          You're viewing a guest analysis.{' '}
-          <a href="/signup" className="underline font-medium hover:text-white/80">Sign up free</a>{' '}
-          to save results, run unlimited analyses, and access your history.
+          Your rooms and total area are shown below.{' '}
+          <a href="/signup" className="underline font-medium hover:text-white/80">Create a free account</a>{' '}
+          to unlock detailed costs, materials breakdown, and PDF reports.
         </div>
       )}
       <section className="relative overflow-hidden border-b border-white/10 bg-[#0a0d14] text-white">
@@ -245,91 +247,111 @@ export default function Results() {
 
             <RoomBreakdown rooms={result.rooms || []} />
 
-            <CostTable
-              materials={adjustedMaterials}
-              costBreakdown={adjustedCostBreakdown}
-              contingencyPercent={result.contingency_percent || 10}
-              selectedTier={selectedTier}
-              structuralTotal={structuralTotalForDisplay}
-              combinedGrandTotal={combinedGrandTotal}
-            />
+            {/* --- Paywall boundary: everything below here is locked for guests --- */}
+            <PaywallOverlay locked={!!isGuest}>
+              <CostTable
+                materials={adjustedMaterials}
+                costBreakdown={adjustedCostBreakdown}
+                contingencyPercent={result.contingency_percent || 10}
+                selectedTier={selectedTier}
+                structuralTotal={structuralTotalForDisplay}
+                combinedGrandTotal={combinedGrandTotal}
+              />
 
 
-            {structuralEstimates && (
-              <div className="card-elevated p-5 animate-slide-up" style={{ animationDelay: '0.25s' }}>
-                <div className="flex items-center justify-between gap-4 mb-4">
-                  <div>
-                    <h3 className="font-semibold text-foreground">Structural Shell Estimate</h3>
-                    <p className="text-sm text-muted-foreground">Framing, foundation, and roofing costs based on NAHB 2024 benchmarks.</p>
+              {structuralEstimates && (
+                <div className="card-elevated p-5 animate-slide-up" style={{ animationDelay: '0.25s' }}>
+                  <div className="flex items-center justify-between gap-4 mb-4">
+                    <div>
+                      <h3 className="font-semibold text-foreground">Structural Shell Estimate</h3>
+                      <p className="text-sm text-muted-foreground">Framing, foundation, and roofing costs based on NAHB 2024 benchmarks.</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Structural total</p>
+                      <p className="text-lg font-semibold font-mono text-foreground">{formatCurrency(structuralTotalForDisplay)}</p>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Structural total</p>
-                    <p className="text-lg font-semibold font-mono text-foreground">{formatCurrency(structuralTotalForDisplay)}</p>
-                  </div>
-                </div>
 
-                <div className="grid gap-4 md:grid-cols-3">
-                  {([
-                    { title: 'Framing', data: structuralEstimates.framing, subtitle: 'Studs, plates, headers' },
-                    { title: 'Foundation', data: structuralEstimates.foundation, subtitle: 'Slab-on-grade' },
-                    { title: 'Roofing', data: structuralEstimates.roofing, subtitle: 'Gable roof, 4/12 pitch' },
-                  ] as const).map((item) => (
-                    <div key={item.title} className="rounded-xl border border-border bg-surface/60 p-4">
-                      <h4 className="text-sm font-semibold text-foreground">{item.title}</h4>
-                      <p className="text-xs text-muted-foreground">{item.subtitle}</p>
-                      <div className="mt-3 space-y-1 text-sm">
-                        <div className="space-y-1 rounded-lg border border-border/60 bg-background/30 p-3 text-xs">
-                          {Object.entries(item.data.line_items || {}).map(([key, lineItem]: any) => (
-                            <div key={key} className="flex justify-between gap-3 text-muted-foreground">
-                              <span className="capitalize">{key.replace(/_/g, ' ')}</span>
-                              <span className="font-mono text-right text-foreground">{formatCurrency(lineItem.total_cost || 0)}</span>
-                            </div>
-                          ))}
-                        </div>
-                        <div className="flex justify-between text-muted-foreground">
-                          <span>Materials</span>
-                          <span className="font-mono">{formatCurrency(item.data.total_material)}</span>
-                        </div>
-                        <div className="flex justify-between text-muted-foreground">
-                          <span>Labor</span>
-                          <span className="font-mono">{formatCurrency(item.data.total_labor)}</span>
-                        </div>
-                        <div className="flex justify-between pt-2 border-t border-border font-semibold">
-                          <span>Total</span>
-                          <span className="font-mono">{formatCurrency(item.data.grand_total)}</span>
+                  <div className="grid gap-4 md:grid-cols-3">
+                    {([
+                      { title: 'Framing', data: structuralEstimates.framing, subtitle: 'Studs, plates, headers' },
+                      { title: 'Foundation', data: structuralEstimates.foundation, subtitle: 'Slab-on-grade' },
+                      { title: 'Roofing', data: structuralEstimates.roofing, subtitle: 'Gable roof, 4/12 pitch' },
+                    ] as const).map((item) => (
+                      <div key={item.title} className="rounded-xl border border-border bg-surface/60 p-4">
+                        <h4 className="text-sm font-semibold text-foreground">{item.title}</h4>
+                        <p className="text-xs text-muted-foreground">{item.subtitle}</p>
+                        <div className="mt-3 space-y-1 text-sm">
+                          <div className="space-y-1 rounded-lg border border-border/60 bg-background/30 p-3 text-xs">
+                            {Object.entries(item.data.line_items || {}).map(([key, lineItem]: any) => (
+                              <div key={key} className="flex justify-between gap-3 text-muted-foreground">
+                                <span className="capitalize">{key.replace(/_/g, ' ')}</span>
+                                <span className="font-mono text-right text-foreground">{formatCurrency(lineItem.total_cost || 0)}</span>
+                              </div>
+                            ))}
+                          </div>
+                          <div className="flex justify-between text-muted-foreground">
+                            <span>Materials</span>
+                            <span className="font-mono">{formatCurrency(item.data.total_material)}</span>
+                          </div>
+                          <div className="flex justify-between text-muted-foreground">
+                            <span>Labor</span>
+                            <span className="font-mono">{formatCurrency(item.data.total_labor)}</span>
+                          </div>
+                          <div className="flex justify-between pt-2 border-t border-border font-semibold">
+                            <span>Total</span>
+                            <span className="font-mono">{formatCurrency(item.data.grand_total)}</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {result.mep_breakdown && (
-              <div className="rounded-xl border border-yellow-500/20 bg-yellow-500/5 p-4 mt-4">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-yellow-400 text-sm font-semibold">MEP Rough Estimate</span>
-                  <span className="text-xs text-yellow-400/60 border border-yellow-400/20 rounded px-1.5 py-0.5">±30%</span>
+              {result.mep_breakdown && (
+                <div className="rounded-xl border border-yellow-500/20 bg-yellow-500/5 p-4 mt-4">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-yellow-400 text-sm font-semibold">MEP Rough Estimate</span>
+                    <span className="text-xs text-yellow-400/60 border border-yellow-400/20 rounded px-1.5 py-0.5">±30%</span>
+                  </div>
+                  <div className="text-white font-mono text-base mb-1">${adjustedMepEstimate.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                  <p className="text-xs text-white/40">{result.mep_breakdown.disclaimer}</p>
                 </div>
-                <div className="text-white font-mono text-base mb-1">${adjustedMepEstimate.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
-                <p className="text-xs text-white/40">{result.mep_breakdown.disclaimer}</p>
-              </div>
-            )}
+              )}
 
-            <p className="text-xs text-muted-foreground">
-              Estimate includes structural shell (framing, foundation, roofing) and interior finishes. Excludes MEP (electrical, plumbing, HVAC), site work, and land.
-            </p>
+              <p className="text-xs text-muted-foreground">
+                Estimate includes structural shell (framing, foundation, roofing) and interior finishes. Excludes MEP (electrical, plumbing, HVAC), site work, and land.
+              </p>
+            </PaywallOverlay>
+
             <TierComparison
               tiers={result.tier_comparisons || []}
               currentTier={selectedTier}
               onTierChange={handleTierChange}
             />
 
-            <ResultActions
-              onNewEstimate={handleNewEstimate}
-              onDownloadPdf={handleDownloadPdf}
-              isGeneratingPdf={isGeneratingPdf}
-            />
+            {isGuest ? (
+              <div className="flex flex-col items-center gap-4 py-6 animate-slide-up" style={{ animationDelay: '0.4s' }}>
+                <p className="text-sm text-muted-foreground text-center">
+                  Sign up to download PDF reports and access your full estimate history.
+                </p>
+                <div className="flex gap-3">
+                  <Button onClick={() => navigate('/signup')} size="lg" className="gap-2">
+                    Sign Up Free <ArrowRight className="w-4 h-4" />
+                  </Button>
+                  <Button onClick={handleNewEstimate} variant="outline" size="lg" className="gap-2">
+                    <RefreshCw className="w-4 h-4" /> New Estimate
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <ResultActions
+                onNewEstimate={handleNewEstimate}
+                onDownloadPdf={handleDownloadPdf}
+                isGeneratingPdf={isGeneratingPdf}
+              />
+            )}
           </div>
         </div>
       </div>

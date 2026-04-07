@@ -30,12 +30,12 @@ const plans: Plan[] = [
     icon: <Zap className="w-6 h-6" strokeWidth={1.5} />,
     monthlyPrice: 0,
     annualPrice: 0,
-    description: 'Perfect for trying out Takeoff.ai',
+    description: 'Try Takeoff.ai risk-free',
     features: [
-      '3 estimates per month',
-      'Basic room detection',
-      'Standard materials library',
-      'PDF export',
+      '3 full estimates per month',
+      'Room detection + area calc',
+      'Cost breakdown + materials',
+      'PDF report export',
     ],
     cta: 'Get Started',
   },
@@ -43,16 +43,16 @@ const plans: Plan[] = [
     id: 'pro',
     name: 'Pro',
     icon: <Building2 className="w-6 h-6" strokeWidth={1.5} />,
-    monthlyPrice: 49,
-    annualPrice: 39,
-    description: 'For contractors who need more',
+    monthlyPrice: 79,
+    annualPrice: 59,
+    description: 'For contractors and estimators',
     features: [
       'Unlimited estimates',
-      'Advanced AI detection',
-      'Custom materials & pricing',
-      'Priority support',
+      'Advanced AI room detection',
+      'Structural shell estimates',
+      'Regional + zip code pricing',
+      'Priority processing',
       'Cost comparison reports',
-      'Regional pricing data',
     ],
     cta: 'Get Pro',
     popular: true,
@@ -61,14 +61,14 @@ const plans: Plan[] = [
     id: 'agency',
     name: 'Agency',
     icon: <Users className="w-6 h-6" strokeWidth={1.5} />,
-    monthlyPrice: 149,
-    annualPrice: 119,
-    description: 'For teams and agencies',
+    monthlyPrice: 199,
+    annualPrice: 159,
+    description: 'For teams and construction firms',
     features: [
       'Everything in Pro',
       'Up to 10 team members',
-      'Shared project library',
       'White-label PDF reports',
+      'Shared project library',
       'API access',
       'Dedicated account manager',
     ],
@@ -139,7 +139,7 @@ export default function Pricing() {
             )}>
               Annual
               <span className="ml-2 text-xs bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded-badge">
-                Save 20%
+                Save 25%
               </span>
             </Label>
           </div>
