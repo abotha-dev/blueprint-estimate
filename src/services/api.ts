@@ -57,17 +57,33 @@ function transformApiResponse(data: any): AnalysisResult {
   const exteriorEstimates = data.exterior_estimates || null;
   const mepBreakdown = costEstimate.mep_breakdown || null;
   
-  // Transform rooms - backend returns strings for dimensions and area
+  // Detect unit system early — needed for dimension/area conversion below
+  const unitSystem: string = analysis.unit_system || 'imperial';
+  const isMetric = unitSystem === 'metric';
+  const M_TO_FT = 3.28084;
+  const SQM_TO_SQFT = 10.7639;
+
+  // Transform rooms - backend returns strings for dimensions and area.
+  // If the plan is metric, convert m → ft and m² → sq ft so the rest of
+  // the app (UI, PDF) always works in imperial.
   const rooms: Room[] = (analysis.rooms || []).map((room: any) => {
-    const length = parseDimensionString(room.length);
-    const width = parseDimensionString(room.width);
-    
+    let length = parseDimensionString(room.length);
+    let width = parseDimensionString(room.width);
+
+    if (isMetric) {
+      length = length * M_TO_FT;
+      width = width * M_TO_FT;
+    }
+
     // Parse area from string, or calculate from dimensions if not provided
     let area = parseAreaString(room.area);
-    if (area === 0 && length > 0 && width > 0) {
-      area = length * width; // Calculate area from dimensions
+    if (isMetric && area > 0) {
+      area = area * SQM_TO_SQFT;
     }
-    
+    if (area === 0 && length > 0 && width > 0) {
+      area = length * width; // Calculate area from (already-converted) dimensions
+    }
+
     return {
       name: room.name || 'Unknown Room',
       dimensions: {
@@ -82,6 +98,9 @@ function transformApiResponse(data: any): AnalysisResult {
 
   // Calculate total area from rooms if not provided
   let totalArea = parseAreaString(analysis.total_area);
+  if (isMetric && totalArea > 0) {
+    totalArea = totalArea * SQM_TO_SQFT;
+  }
   if (totalArea === 0) {
     totalArea = rooms.reduce((sum, room) => sum + (room.area || 0), 0);
   }
