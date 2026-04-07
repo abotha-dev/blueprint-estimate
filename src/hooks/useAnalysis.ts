@@ -7,6 +7,7 @@ const DEFAULT_SETTINGS: AnalysisSettings = {
   quality_tier: 'standard',
   region: 'us_national',
   include_labor: true,
+  include_mep: false,
   contingency_percent: 10,
   labor_availability: 'average',
 };

@@ -57,6 +57,8 @@ export default function Results() {
     }));
   }, [result?.materials, tierMultiplier]);
 
+  const adjustedMepEstimate = useMemo(() => (result?.mep_breakdown?.mep_estimate || 0) * tierMultiplier, [result?.mep_breakdown?.mep_estimate, tierMultiplier]);
+
   const adjustedCostBreakdown = useMemo((): CostBreakdown => {
     if (!result?.cost_breakdown) {
       return {
@@ -78,9 +80,9 @@ export default function Results() {
       labor_subtotal: laborSubtotal,
       subtotal: subtotal,
       contingency_amount: contingencyAmount,
-      grand_total: subtotal + contingencyAmount,
+      grand_total: subtotal + contingencyAmount + adjustedMepEstimate,
     };
-  }, [result?.cost_breakdown, result?.contingency_percent, tierMultiplier]);
+  }, [result?.cost_breakdown, result?.contingency_percent, adjustedMepEstimate, tierMultiplier]);
 
 
   const structuralEstimates = useMemo(() => {
@@ -296,9 +298,19 @@ export default function Results() {
               </div>
             )}
 
+            {result.mep_breakdown && (
+              <div className="rounded-xl border border-yellow-500/20 bg-yellow-500/5 p-4 mt-4">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-yellow-400 text-sm font-semibold">MEP Rough Estimate</span>
+                  <span className="text-xs text-yellow-400/60 border border-yellow-400/20 rounded px-1.5 py-0.5">±30%</span>
+                </div>
+                <div className="text-white font-mono text-base mb-1">${adjustedMepEstimate.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                <p className="text-xs text-white/40">{result.mep_breakdown.disclaimer}</p>
+              </div>
+            )}
+
             <p className="text-xs text-muted-foreground">
-              Estimate includes structural shell (framing, foundation, roofing) and interior finishes. Excludes MEP
-              (electrical, plumbing, HVAC), site work, and land.
+              Estimate includes structural shell (framing, foundation, roofing) and interior finishes.{result.mep_breakdown ? ' Includes a rough MEP allowance (electrical, plumbing, HVAC).' : ' Excludes MEP (electrical, plumbing, HVAC).'} Excludes site work and land.
             </p>
             <TierComparison
               tiers={result.tier_comparisons || []}

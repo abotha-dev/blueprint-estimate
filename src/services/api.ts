@@ -55,6 +55,7 @@ function transformApiResponse(data: any): AnalysisResult {
   const qualityComparison = data.quality_comparison || {};
   const structuralEstimates = data.structural_estimates || null;
   const exteriorEstimates = data.exterior_estimates || null;
+  const mepBreakdown = costEstimate.mep_breakdown || null;
   
   // Transform rooms - backend returns strings for dimensions and area
   const rooms: Room[] = (analysis.rooms || []).map((room: any) => {
@@ -109,6 +110,7 @@ function transformApiResponse(data: any): AnalysisResult {
   const result: AnalysisResult = {
     structural_estimates: structuralEstimates as StructuralEstimates | null,
     exterior_estimates: exteriorEstimates as ExteriorEstimates | null,
+    mep_breakdown: mepBreakdown,
     project_name: costEstimate.project_name || data.project_name || 'Untitled Project',
     filename: analysis.filename || 'Unknown File',
     total_area: totalArea,
@@ -121,6 +123,7 @@ function transformApiResponse(data: any): AnalysisResult {
     quality_tier: data.quality_tier || 'standard',
     region: costEstimate.region || data.region || 'us_national',
     include_labor: data.include_labor ?? true,
+    include_mep: Boolean(mepBreakdown),
     contingency_percent: (costEstimate.contingency_percent || 0.10) * 100,
   };
 
@@ -243,6 +246,7 @@ export async function analyzeBlueprint(
     quality_tier: settings.quality_tier,
     region: settings.region,
     include_labor: String(settings.include_labor),
+    include_mep: String(settings.include_mep),
     contingency_percent: String(settings.contingency_percent / 100), // Convert to decimal for backend
     labor_availability: settings.labor_availability || 'average',
   });

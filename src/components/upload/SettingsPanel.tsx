@@ -241,6 +241,21 @@ export function SettingsPanel({ settings, onUpdate, disabled }: SettingsPanelPro
               />
             </div>
 
+            <div className="flex items-center justify-between">
+              <div>
+                <Label htmlFor="include-mep" className="text-base">Include MEP rough estimate</Label>
+                <p className="text-sm text-muted-foreground mt-0.5">
+                  Adds ~25% for HVAC, electrical & plumbing (±30% accuracy)
+                </p>
+              </div>
+              <Switch
+                id="include-mep"
+                checked={settings.include_mep}
+                onCheckedChange={(checked) => onUpdate({ include_mep: checked })}
+                disabled={disabled}
+              />
+            </div>
+
             {/* Contingency */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">

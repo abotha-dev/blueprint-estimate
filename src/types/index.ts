@@ -35,6 +35,13 @@ export interface TierEstimate {
   labor_subtotal: number;
 }
 
+export interface MEPBreakdown {
+  mep_estimate: number;
+  mep_multiplier: number;
+  disclaimer: string;
+  includes: string[];
+}
+
 
 export interface StructuralLineItem {
   quantity: number;
@@ -94,11 +101,13 @@ export interface AnalysisResult {
   cost_breakdown: CostBreakdown;
   structural_estimates?: StructuralEstimates;
   exterior_estimates?: ExteriorEstimates;
+  mep_breakdown?: MEPBreakdown | null;
   tier_comparisons: TierEstimate[];
   warnings: string[];
   quality_tier: QualityTier;
   region: Region;
   include_labor: boolean;
+  include_mep: boolean;
   contingency_percent: number;
   labor_availability?: LaborAvailability;
 }
@@ -113,6 +122,7 @@ export interface AnalysisSettings {
   region: Region;
   zipcode?: string;  // Optional zipcode for state-specific pricing
   include_labor: boolean;
+  include_mep: boolean;
   contingency_percent: number;
   labor_availability: LaborAvailability;
 }
