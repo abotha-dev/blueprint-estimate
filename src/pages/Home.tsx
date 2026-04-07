@@ -140,8 +140,10 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right — blueprint floor plan */}
-            <BlueprintHero />
+            {/* Right — blueprint floor plan (hidden on mobile) */}
+            <div className="hidden lg:block">
+              <BlueprintHero />
+            </div>
           </div>
         </div>
       </section>
