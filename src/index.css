@@ -16,10 +16,10 @@
 
 @layer base {
   :root {
-    /* Core brand - Indigo */
-    --primary: 234 56% 48%;
+    /* Core brand - Indigo (lightened for dark-bg legibility) */
+    --primary: 234 60% 62%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 234 56% 42%;
+    --primary-hover: 234 56% 52%;
     --primary-muted: 234 20% 14%;
 
     /* Secondary */
@@ -39,11 +39,11 @@
 
     /* Muted */
     --muted: 240 4% 16%;
-    --muted-foreground: 0 0% 50%;
+    --muted-foreground: 0 0% 58%;
 
     /* Accent */
     --accent: 234 20% 14%;
-    --accent-foreground: 234 56% 60%;
+    --accent-foreground: 234 60% 68%;
 
     /* States */
     --success: 160 84% 39%;

@@ -45,41 +45,41 @@ export function AnalysisSettings({
   laborAvailability,
 }: AnalysisSettingsProps) {
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-6">
+    <div className="card-elevated p-6">
       <div className="flex items-center gap-2 mb-4">
-        <Settings className="h-5 w-5 text-gray-600" />
-        <h3 className="text-lg font-semibold text-gray-900">Analysis Settings</h3>
+        <Settings className="h-5 w-5 text-muted-foreground" />
+        <h3 className="text-lg font-semibold text-foreground">Analysis Settings</h3>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <dt className="text-sm font-medium text-gray-500">Project Name</dt>
-          <dd className="mt-1 text-sm text-gray-900">{projectName}</dd>
+          <dt className="text-sm font-medium text-muted-foreground">Project Name</dt>
+          <dd className="mt-1 text-sm text-foreground">{projectName}</dd>
         </div>
-        
+
         <div>
-          <dt className="text-sm font-medium text-gray-500">Quality Tier</dt>
-          <dd className="mt-1 text-sm text-gray-900">{formatQualityTier(qualityTier)}</dd>
+          <dt className="text-sm font-medium text-muted-foreground">Quality Tier</dt>
+          <dd className="mt-1 text-sm text-foreground">{formatQualityTier(qualityTier)}</dd>
         </div>
-        
+
         <div>
-          <dt className="text-sm font-medium text-gray-500">Location</dt>
-          <dd className="mt-1 text-sm text-gray-900">{formatRegion(region)}</dd>
+          <dt className="text-sm font-medium text-muted-foreground">Location</dt>
+          <dd className="mt-1 text-sm text-foreground">{formatRegion(region)}</dd>
         </div>
-        
+
         <div>
-          <dt className="text-sm font-medium text-gray-500">Labor Availability</dt>
-          <dd className="mt-1 text-sm text-gray-900">{formatLaborAvailability(laborAvailability)}</dd>
+          <dt className="text-sm font-medium text-muted-foreground">Labor Availability</dt>
+          <dd className="mt-1 text-sm text-foreground">{formatLaborAvailability(laborAvailability)}</dd>
         </div>
-        
+
         <div>
-          <dt className="text-sm font-medium text-gray-500">Labor Costs</dt>
-          <dd className="mt-1 text-sm text-gray-900">{includeLabor ? 'Included' : 'Not Included'}</dd>
+          <dt className="text-sm font-medium text-muted-foreground">Labor Costs</dt>
+          <dd className="mt-1 text-sm text-foreground">{includeLabor ? 'Included' : 'Not Included'}</dd>
         </div>
-        
+
         <div>
-          <dt className="text-sm font-medium text-gray-500">Contingency</dt>
-          <dd className="mt-1 text-sm text-gray-900">{contingencyPercent}%</dd>
+          <dt className="text-sm font-medium text-muted-foreground">Contingency</dt>
+          <dd className="mt-1 text-sm text-foreground">{contingencyPercent}%</dd>
         </div>
       </div>
     </div>
