@@ -387,6 +387,14 @@ export async function generatePDFReport(
     total_area: result.total_area || 0,
     contingency_percent: result.contingency_percent || 10,
     labor_availability: result.labor_availability || 'average',
+    structural_estimates: result.structural_estimates ? {
+      framing: result.structural_estimates.framing,
+      foundation: result.structural_estimates.foundation,
+      roofing: result.structural_estimates.roofing,
+      subtotal_material: result.structural_estimates.subtotal_material,
+      subtotal_labor: result.structural_estimates.subtotal_labor,
+      grand_total: result.structural_estimates.grand_total,
+    } : null,
   };
 
   const response = await fetch(`${API_BASE_URL}/api/v1/generate-pdf`, {

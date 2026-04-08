@@ -152,13 +152,14 @@ export default function Results() {
     
     setIsGeneratingPdf(true);
     try {
-      // Create an adjusted result with the current tier's costs
+      // Create an adjusted result with the current tier's costs + structural
       const adjustedResult: AnalysisResult = {
         ...result,
         materials: adjustedMaterials,
         cost_breakdown: adjustedCostBreakdown,
+        structural_estimates: structuralEstimates || undefined,
       };
-      
+
       await generatePDFReport(adjustedResult, selectedTier);
     } catch (error) {
       console.error('PDF generation failed:', error);
@@ -166,7 +167,7 @@ export default function Results() {
     } finally {
       setIsGeneratingPdf(false);
     }
-  }, [result, adjustedMaterials, adjustedCostBreakdown, selectedTier, isGeneratingPdf]);
+  }, [result, adjustedMaterials, adjustedCostBreakdown, structuralEstimates, selectedTier, isGeneratingPdf]);
 
   const formattedTotal = formatCurrency(combinedGrandTotal);
   const roomCount = result.rooms?.length || 0;
