@@ -49,6 +49,7 @@ export default function Analyze() {
           total_area: result.total_area,
           total_estimate: result.cost_breakdown.grand_total,
           quality_tier: result.quality_tier,
+          results_summary: result,
         });
 
         if (error) {

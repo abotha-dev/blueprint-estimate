@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
 import { Layout } from '@/components/layout/Layout';
 import { StickySummary } from '@/components/results/StickySummary';
 import { BlueprintSummary } from '@/components/results/BlueprintSummary';
@@ -18,21 +19,54 @@ const formatCurrency = (value: number) => `$${(value || 0).toLocaleString(undefi
 export default function Results() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { result: initialResult, thumbnail, isGuest } = (location.state || {}) as { 
-    result?: AnalysisResult; 
+  const { id } = useParams<{ id?: string }>();
+  const { result: initialResult, thumbnail, isGuest } = (location.state || {}) as {
+    result?: AnalysisResult;
     thumbnail?: string;
     isGuest?: boolean;
   };
 
   const [result, setResult] = useState<AnalysisResult | null>(initialResult || null);
   const [selectedTier, setSelectedTier] = useState<QualityTier>(initialResult?.quality_tier || 'standard');
+  const [loadingHistory, setLoadingHistory] = useState(!!id && !initialResult);
 
-  // Redirect if no result
+  // Load from history if navigated via /results/:id
   useEffect(() => {
-    if (!result) {
+    if (!id || initialResult) return;
+    async function loadFromHistory() {
+      const { data, error } = await supabase
+        .from('upload_history')
+        .select('results_summary, quality_tier')
+        .eq('id', id)
+        .single();
+      if (error || !data?.results_summary) {
+        navigate('/analyze');
+        return;
+      }
+      const saved = data.results_summary as unknown as AnalysisResult;
+      setResult(saved);
+      setSelectedTier((data.quality_tier as QualityTier) || saved.quality_tier || 'standard');
+      setLoadingHistory(false);
+    }
+    loadFromHistory();
+  }, [id, initialResult, navigate]);
+
+  // Redirect if no result and not loading
+  useEffect(() => {
+    if (!loadingHistory && !result) {
       navigate('/analyze');
     }
-  }, [result, navigate]);
+  }, [result, loadingHistory, navigate]);
+
+  if (loadingHistory) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-[rgba(255,255,255,0.5)]">Loading estimate...</div>
+        </div>
+      </Layout>
+    );
+  }
 
   // Calculate the price multiplier based on selected tier vs standard tier
   const tierMultiplier = useMemo(() => {

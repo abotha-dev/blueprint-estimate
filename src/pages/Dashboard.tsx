@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   User, CreditCard, FileText, ArrowRight,
-  Calendar, DollarSign, Loader2, ExternalLink
+  Calendar, DollarSign, Loader2, ExternalLink, ChevronRight
 } from 'lucide-react';
 import { Layout } from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
@@ -139,7 +139,7 @@ export default function Dashboard() {
                   <div className="flex items-center justify-center w-10 h-10 rounded-card bg-blue-500/10 text-blue-400">
                     <FileText className="w-5 h-5" strokeWidth={1.5} />
                   </div>
-                  <h2 className="text-lg font-semibold" style={{ letterSpacing: '-0.02em' }}>Estimates This Month</h2>
+                  <h2 className="text-lg font-semibold" style={{ letterSpacing: '-0.02em' }}>Recent Estimates</h2>
                 </div>
                 <Link to="/analyze">
                   <Button size="sm" className="gap-2">
@@ -180,7 +180,11 @@ export default function Dashboard() {
                 ) : (
                   <div className="divide-y divide-[rgba(255,255,255,0.08)]">
                     {uploads.map((upload) => (
-                      <div key={upload.id} className="flex items-center justify-between p-4 hover:bg-[rgba(255,255,255,0.02)] transition-[background-color] duration-150 ease-out">
+                      <Link
+                        key={upload.id}
+                        to={`/results/${upload.id}`}
+                        className="flex items-center justify-between p-4 hover:bg-[rgba(255,255,255,0.02)] transition-[background-color] duration-150 ease-out cursor-pointer group"
+                      >
                         <div className="flex items-center gap-4">
                           <div className="flex items-center justify-center w-10 h-10 rounded-btn bg-[rgba(255,255,255,0.04)]">
                             <FileText className="w-5 h-5 text-[rgba(255,255,255,0.5)]" strokeWidth={1.5} />
@@ -195,21 +199,27 @@ export default function Dashboard() {
                               {upload.rooms_detected && (
                                 <span style={{ fontVariantNumeric: 'tabular-nums' }}>{upload.rooms_detected} rooms</span>
                               )}
+                              {upload.quality_tier && (
+                                <span className="capitalize">{upload.quality_tier}</span>
+                              )}
                             </div>
                           </div>
                         </div>
-                        <div className="text-right">
-                          <p className="font-mono font-semibold text-[rgba(255,255,255,0.9)] flex items-center gap-1" style={{ fontVariantNumeric: 'tabular-nums' }}>
-                            <DollarSign className="w-4 h-4" strokeWidth={1.5} />
-                            {formatCurrency(upload.total_estimate)}
-                          </p>
-                          {upload.total_area && (
-                            <p className="text-sm text-[rgba(255,255,255,0.5)]" style={{ fontVariantNumeric: 'tabular-nums' }}>
-                              {upload.total_area.toLocaleString()} sq ft
+                        <div className="flex items-center gap-3">
+                          <div className="text-right">
+                            <p className="font-mono font-semibold text-[rgba(255,255,255,0.9)] flex items-center gap-1" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                              <DollarSign className="w-4 h-4" strokeWidth={1.5} />
+                              {formatCurrency(upload.total_estimate)}
                             </p>
-                          )}
+                            {upload.total_area && (
+                              <p className="text-sm text-[rgba(255,255,255,0.5)]" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                                {upload.total_area.toLocaleString()} sq ft
+                              </p>
+                            )}
+                          </div>
+                          <ChevronRight className="w-4 h-4 text-[rgba(255,255,255,0.3)] group-hover:text-[rgba(255,255,255,0.6)] transition-colors" strokeWidth={1.5} />
                         </div>
-                      </div>
+                      </Link>
                     ))}
                   </div>
                 )}
