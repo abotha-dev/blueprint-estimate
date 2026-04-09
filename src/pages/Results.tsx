@@ -278,7 +278,7 @@ export default function Results() {
               laborAvailability={result.labor_availability}
             />
             
-            <BlueprintSummary result={result} thumbnail={thumbnail} />
+            <BlueprintSummary result={result} thumbnail={thumbnail} grandTotal={combinedGrandTotal} />
 
             <RoomBreakdown rooms={result.rooms || []} />
 

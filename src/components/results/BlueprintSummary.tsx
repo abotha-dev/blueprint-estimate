@@ -4,9 +4,14 @@ import { AnalysisResult } from '@/types';
 interface BlueprintSummaryProps {
   result: AnalysisResult;
   thumbnail?: string;
+  grandTotal?: number;
 }
 
-export function BlueprintSummary({ result, thumbnail }: BlueprintSummaryProps) {
+function formatCurrency(value: number) {
+  return `$${(value || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+export function BlueprintSummary({ result, thumbnail, grandTotal = 0 }: BlueprintSummaryProps) {
   return (
     <div className="card-elevated p-5 animate-slide-up">
       <div className="flex gap-4">
@@ -34,6 +39,12 @@ export function BlueprintSummary({ result, thumbnail }: BlueprintSummaryProps) {
               <Layers className="w-4 h-4" />
               <span>{(result.rooms?.length || 0)} rooms detected</span>
             </div>
+          </div>
+
+          <div className="mt-4 rounded-xl border border-border bg-surface/60 p-4">
+            <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Combined estimate</p>
+            <p className="mt-2 text-2xl font-semibold font-mono text-foreground">{formatCurrency(grandTotal)}</p>
+            <p className="mt-2 text-xs text-muted-foreground">Includes structural shell (framing, foundation, roofing) and interior finishes. Excludes MEP (electrical, plumbing, HVAC), site work, and land.</p>
           </div>
         </div>
       </div>
