@@ -1,4 +1,4 @@
-import { AnalysisResult, AnalysisSettings, Room, MaterialItem, CostBreakdown, TierEstimate, StructuralEstimates, ExteriorEstimates } from '@/types';
+import { AnalysisResult, AnalysisSettings, Room, MaterialItem, CostBreakdown, TierEstimate, StructuralEstimates, ExteriorEstimates, DemoBreakdown } from '@/types';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://takeoff-api-uyzv.onrender.com';
 
@@ -56,6 +56,7 @@ function transformApiResponse(data: any): AnalysisResult {
   const structuralEstimates = data.structural_estimates || null;
   const exteriorEstimates = data.exterior_estimates || null;
   const mepBreakdown = costEstimate.mep_breakdown || null;
+  const demoBreakdown: DemoBreakdown | null = costEstimate.demo_breakdown || null;
   
   // Detect unit system early — needed for dimension/area conversion below
   const unitSystem: string = analysis.unit_system || 'imperial';
@@ -130,6 +131,7 @@ function transformApiResponse(data: any): AnalysisResult {
     structural_estimates: structuralEstimates as StructuralEstimates | null,
     exterior_estimates: exteriorEstimates as ExteriorEstimates | null,
     mep_breakdown: mepBreakdown,
+    demo_breakdown: demoBreakdown,
     project_name: costEstimate.project_name || data.project_name || 'Untitled Project',
     filename: analysis.filename || 'Unknown File',
     total_area: totalArea,
@@ -198,6 +200,38 @@ function transformMaterialsFromEstimates(estimates: any[]): MaterialItem[] {
     'drywall': 'Drywall',
     'baseboard': 'Trim',
     'crown_molding': 'Trim',
+    'cabinets_base': 'Kitchen',
+    'cabinets_wall': 'Kitchen',
+    'countertop_laminate': 'Kitchen',
+    'countertop_granite': 'Kitchen',
+    'countertop_quartz': 'Kitchen',
+    'backsplash_tile': 'Kitchen',
+    'kitchen_sink': 'Kitchen',
+    'kitchen_faucet': 'Kitchen',
+    'vanity_cabinet': 'Bathroom',
+    'toilet': 'Bathroom',
+    'bathroom_faucet': 'Bathroom',
+    'shower_tile': 'Bathroom',
+    'shower_door': 'Bathroom',
+    'bathtub': 'Bathroom',
+    'bathroom_exhaust_fan': 'Bathroom',
+    'electrical_outlet': 'Electrical',
+    'electrical_gfi_outlet': 'Electrical',
+    'electrical_switch': 'Electrical',
+    'electrical_light_fixture': 'Electrical',
+    'electrical_wire_run': 'Electrical',
+    'electrical_breaker_panel': 'Electrical',
+    'plumbing_supply_line': 'Plumbing',
+    'plumbing_drain_line': 'Plumbing',
+    'plumbing_vent_stack': 'Plumbing',
+    'plumbing_water_heater': 'Plumbing',
+    'plumbing_shutoff_valve': 'Plumbing',
+    'appliance_range': 'Appliances',
+    'appliance_dishwasher': 'Appliances',
+    'appliance_microwave_hood': 'Appliances',
+    'appliance_refrigerator': 'Appliances',
+    'appliance_washer': 'Appliances',
+    'appliance_dryer': 'Appliances',
   };
 
   return estimates.map((item: any) => ({

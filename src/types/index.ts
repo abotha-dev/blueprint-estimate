@@ -42,6 +42,23 @@ export interface MEPBreakdown {
   includes: string[];
 }
 
+export interface DemoLineItem {
+  material_type: string;
+  display_name: string;
+  units_needed: number;
+  unit: string;
+  material_cost: number;
+  labor_cost: number;
+  total_cost: number;
+  price_per_unit: number;
+}
+
+export interface DemoBreakdown {
+  line_items: DemoLineItem[];
+  subtotal: number;
+  disclaimer: string;
+}
+
 
 export interface StructuralLineItem {
   quantity: number;
@@ -102,6 +119,7 @@ export interface AnalysisResult {
   structural_estimates?: StructuralEstimates;
   exterior_estimates?: ExteriorEstimates;
   mep_breakdown?: MEPBreakdown | null;
+  demo_breakdown?: DemoBreakdown | null;
   tier_comparisons: TierEstimate[];
   warnings: string[];
   quality_tier: QualityTier;

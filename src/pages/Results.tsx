@@ -10,10 +10,12 @@ import { TierComparison } from '@/components/results/TierComparison';
 import { ResultActions } from '@/components/results/ResultActions';
 import { AnalysisSettings } from '@/components/results/AnalysisSettings';
 import { PaywallOverlay } from '@/components/results/PaywallOverlay';
-import { AnalysisResult, QualityTier, MaterialItem, CostBreakdown } from '@/types';
+import { AnalysisResult, QualityTier, MaterialItem, CostBreakdown, DemoLineItem } from '@/types';
 import { generatePDFReport } from '@/services/api';
-import { AlertCircle, ArrowRight, RefreshCw } from 'lucide-react';
+import { AlertCircle, ArrowRight, RefreshCw, HardHat } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 
 const formatCurrency = (value: number) => `$${(value || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 export default function Results() {
@@ -29,6 +31,7 @@ export default function Results() {
   const [result, setResult] = useState<AnalysisResult | null>(initialResult || null);
   const [selectedTier, setSelectedTier] = useState<QualityTier>(initialResult?.quality_tier || 'standard');
   const [loadingHistory, setLoadingHistory] = useState(!!id && !initialResult);
+  const [remodelMode, setRemodelMode] = useState(false);
 
   // Load from history if navigated via /results/:id
   useEffect(() => {
@@ -120,6 +123,19 @@ export default function Results() {
 
   const adjustedMepEstimate = useMemo(() => (result?.mep_breakdown?.mep_estimate || 0) * tierMultiplier, [result?.mep_breakdown?.mep_estimate, tierMultiplier]);
 
+  const adjustedDemoTotal = useMemo(() => (result?.demo_breakdown?.subtotal || 0) * tierMultiplier, [result?.demo_breakdown?.subtotal, tierMultiplier]);
+
+  const adjustedDemoLineItems = useMemo((): DemoLineItem[] => {
+    if (!result?.demo_breakdown?.line_items) return [];
+    return result.demo_breakdown.line_items.map(item => ({
+      ...item,
+      material_cost: item.material_cost * tierMultiplier,
+      labor_cost: item.labor_cost * tierMultiplier,
+      total_cost: item.total_cost * tierMultiplier,
+      price_per_unit: item.price_per_unit * tierMultiplier,
+    }));
+  }, [result?.demo_breakdown?.line_items, tierMultiplier]);
+
   const structuralEstimates = useMemo(() => {
     if (!result?.structural_estimates) return null;
 
@@ -164,7 +180,8 @@ export default function Results() {
 
   const interiorGrandTotal = adjustedCostBreakdown.grand_total;
   const structuralGrandTotal = structuralEstimates?.grand_total || 0;
-  const combinedGrandTotal = interiorGrandTotal + structuralGrandTotal;
+  const demoTotal = remodelMode ? adjustedDemoTotal : 0;
+  const combinedGrandTotal = interiorGrandTotal + structuralGrandTotal + demoTotal;
   const structuralTotalForDisplay = structuralGrandTotal;
 
   if (!result) {
@@ -282,6 +299,24 @@ export default function Results() {
 
             <RoomBreakdown rooms={result.rooms || []} />
 
+            {/* Remodel Mode toggle */}
+            {result.demo_breakdown && (
+              <div className="flex items-center gap-3 px-4 py-3 rounded-xl border border-border bg-surface/60">
+                <HardHat className="h-4 w-4 text-orange-400 flex-shrink-0" />
+                <div className="flex-1">
+                  <Label htmlFor="remodel-mode" className="text-sm font-medium text-foreground cursor-pointer">
+                    Remodel Mode
+                  </Label>
+                  <p className="text-xs text-muted-foreground">Add demo &amp; removal costs before new materials</p>
+                </div>
+                <Switch
+                  id="remodel-mode"
+                  checked={remodelMode}
+                  onCheckedChange={setRemodelMode}
+                />
+              </div>
+            )}
+
             {/* --- Paywall boundary: everything below here is locked for guests --- */}
             <PaywallOverlay locked={!!isGuest}>
               <CostTable
@@ -352,6 +387,45 @@ export default function Results() {
                   </div>
                   <div className="text-white font-mono text-base mb-1">${adjustedMepEstimate.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
                   <p className="text-xs text-white/40">{result.mep_breakdown.disclaimer}</p>
+                </div>
+              )}
+
+              {remodelMode && result.demo_breakdown && (
+                <div className="card-elevated p-5 mt-4 animate-slide-up border border-orange-500/20 bg-orange-500/5">
+                  <div className="flex items-center justify-between gap-4 mb-4">
+                    <div className="flex items-center gap-2">
+                      <HardHat className="h-4 w-4 text-orange-400" />
+                      <div>
+                        <h3 className="font-semibold text-foreground">Demo &amp; Removal</h3>
+                        <p className="text-sm text-muted-foreground">Labor costs to remove existing materials before new installation.</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Demo total</p>
+                      <p className="text-lg font-semibold font-mono text-foreground">{formatCurrency(adjustedDemoTotal)}</p>
+                    </div>
+                  </div>
+                  <div className="rounded-lg border border-border/60 bg-background/30 overflow-hidden">
+                    <table className="w-full text-xs">
+                      <thead>
+                        <tr className="border-b border-border/60">
+                          <th className="text-left px-3 py-2 text-muted-foreground font-medium">Item</th>
+                          <th className="text-right px-3 py-2 text-muted-foreground font-medium">Qty</th>
+                          <th className="text-right px-3 py-2 text-muted-foreground font-medium">Total</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {adjustedDemoLineItems.map((item, i) => (
+                          <tr key={item.material_type} className={i < adjustedDemoLineItems.length - 1 ? 'border-b border-border/40' : ''}>
+                            <td className="px-3 py-2 text-foreground">{item.display_name}</td>
+                            <td className="px-3 py-2 text-right font-mono text-muted-foreground">{item.units_needed} {item.unit}</td>
+                            <td className="px-3 py-2 text-right font-mono text-foreground">{formatCurrency(item.total_cost)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-3">{result.demo_breakdown.disclaimer}</p>
                 </div>
               )}
 
