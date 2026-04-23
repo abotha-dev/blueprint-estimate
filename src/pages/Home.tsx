@@ -169,8 +169,8 @@ export default function Home() {
                 <HouseIllustration />
                 {/* Floating estimate chip */}
                 <div
-                  className="absolute -bottom-4 -right-4 sm:bottom-6 sm:right-6 rounded-lg border border-amber-400/30 bg-slate-950/90 px-4 py-3 shadow-xl shadow-black/40"
-                  style={{ opacity: 0, animation: 'fade-in-labels 0.6s ease-out 4.3s forwards' }}
+                  className="house-anim-labels absolute -bottom-4 -right-4 sm:bottom-6 sm:right-6 rounded-lg border border-amber-400/30 bg-slate-950/90 px-4 py-3 shadow-xl shadow-black/40"
+                  style={{ animationDelay: '4.3s' }}
                 >
                   <div className="text-[10px] uppercase tracking-widest text-white/50 mb-1">Estimated range</div>
                   <div className="text-xl font-bold text-amber-400 font-mono">$112K — $186K</div>
