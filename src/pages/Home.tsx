@@ -38,6 +38,7 @@ const SEGMENTS = [
     icon: HomeIcon,
     heading: 'ADU Builders',
     body: "The engine's assumptions (slab-on-grade, gable roof, single-story) match the way most ADUs are actually built. Get a fast feasibility range to share with homeowners before you commit to a detailed estimate.",
+    bestFit: true,
   },
   {
     icon: Hammer,
@@ -79,7 +80,7 @@ export default function Home() {
     <div className="min-h-screen bg-white text-slate-900">
       {/* ─── Nav (dark) ──────────────────────────────────────────── */}
       <header className="bg-slate-900 text-white">
-        <div className="container flex h-16 items-center justify-between">
+        <div className="max-w-7xl mx-auto px-6 flex h-16 items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5 group">
             <TakeoffLogo size={32} />
             <span className="font-semibold text-base tracking-tight">mytakeoff.ai</span>
@@ -124,7 +125,7 @@ export default function Home() {
           <div className="absolute top-1/3 -right-40 w-[600px] h-[500px] bg-amber-500/10 rounded-full blur-[140px]" />
         </div>
 
-        <div className="container relative z-10 py-16 md:py-24">
+        <div className="max-w-7xl mx-auto px-6 relative z-10 py-16 md:py-24">
           <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] gap-12 lg:gap-14 items-center">
             {/* Copy */}
             <div>
@@ -184,7 +185,7 @@ export default function Home() {
 
       {/* ─── How It Works ───────────────────────────────────────── */}
       <section id="how-it-works" className="py-20 md:py-28 bg-white">
-        <div className="container">
+        <div className="max-w-7xl mx-auto px-6">
           <div className="max-w-2xl mb-14">
             <div className="text-xs uppercase tracking-widest text-amber-600 font-semibold mb-3">How it works</div>
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">
@@ -216,9 +217,9 @@ export default function Home() {
 
       {/* ─── Value Prop (warm gray) ─────────────────────────────── */}
       <section className="py-20 md:py-28 bg-stone-100">
-        <div className="container">
+        <div className="max-w-7xl mx-auto px-6">
           <div className="max-w-3xl mx-auto">
-            <div className="text-xs uppercase tracking-widest text-amber-600 font-semibold mb-3">Why contractors use it</div>
+            <div className="text-xs uppercase tracking-widest text-amber-600 font-semibold mb-3">The filter you run first</div>
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight mb-8 leading-tight">
               Stop spending hours on leads that were never going to close.
             </h2>
@@ -239,7 +240,7 @@ export default function Home() {
 
       {/* ─── Who It's For ───────────────────────────────────────── */}
       <section className="py-20 md:py-28 bg-white">
-        <div className="container">
+        <div className="max-w-7xl mx-auto px-6">
           <div className="max-w-2xl mb-14">
             <div className="text-xs uppercase tracking-widest text-amber-600 font-semibold mb-3">Who it's for</div>
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">
@@ -251,8 +252,13 @@ export default function Home() {
             {SEGMENTS.map((seg, i) => (
               <div
                 key={i}
-                className="rounded-xl border border-slate-200 bg-stone-50 p-7"
+                className="relative rounded-xl border border-slate-200 bg-stone-50 p-7"
               >
+                {seg.bestFit && (
+                  <span className="absolute top-4 right-4 inline-flex items-center gap-1 rounded-full bg-amber-500 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-slate-950">
+                    Best Fit
+                  </span>
+                )}
                 <div className="w-11 h-11 rounded-lg bg-slate-900 flex items-center justify-center mb-5">
                   <seg.icon className="w-5 h-5 text-amber-400" />
                 </div>
@@ -268,7 +274,7 @@ export default function Home() {
 
       {/* ─── What You Get ───────────────────────────────────────── */}
       <section className="py-20 md:py-28 bg-stone-100">
-        <div className="container">
+        <div className="max-w-7xl mx-auto px-6">
           <div className="max-w-2xl mb-14">
             <div className="text-xs uppercase tracking-widest text-amber-600 font-semibold mb-3">What you get</div>
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">
@@ -292,7 +298,7 @@ export default function Home() {
 
       {/* ─── Honesty Block ──────────────────────────────────────── */}
       <section className="py-20 md:py-24 bg-white">
-        <div className="container">
+        <div className="max-w-7xl mx-auto px-6">
           <div className="max-w-3xl mx-auto rounded-2xl border border-slate-200 bg-stone-50 p-8 md:p-12">
             <div className="text-xs uppercase tracking-widest text-amber-600 font-semibold mb-3">Straight talk</div>
             <h2 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight mb-6">
@@ -322,7 +328,7 @@ export default function Home() {
             <rect width="100%" height="100%" fill="url(#cta-grid)" />
           </svg>
         </div>
-        <div className="container relative z-10">
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
           <div className="max-w-2xl mx-auto text-center">
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
               See it for yourself.
@@ -345,7 +351,7 @@ export default function Home() {
 
       {/* ─── Footer (dark slate) ────────────────────────────────── */}
       <footer className="bg-slate-950 text-white/60 border-t border-white/5">
-        <div className="container py-14">
+        <div className="max-w-7xl mx-auto px-6 py-14">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div className="col-span-2 md:col-span-1">
               <div className="flex items-center gap-2 mb-3">
