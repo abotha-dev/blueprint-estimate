@@ -13,7 +13,8 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { TakeoffLogo } from '@/components/ui/TakeoffLogo';
-import heroHouse from '@/assets/hero-house.png';
+// Image lives in /public so it's served as a static URL — no build-time import needed
+const heroHouse = '/hero-house.png';
 
 const STEPS = [
   {
