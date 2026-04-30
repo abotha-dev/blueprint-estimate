@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { TakeoffLogo } from '@/components/ui/TakeoffLogo';
-import { HouseIllustration } from '@/components/home/HouseIllustration';
+import heroHouse from '@/assets/hero-house.png';
 
 const STEPS = [
   {
@@ -111,7 +111,7 @@ export default function Home() {
       </header>
 
       {/* ─── Hero (dark slate) ───────────────────────────────────── */}
-      <section className="relative bg-slate-900 text-white overflow-hidden">
+      <section className="relative text-white overflow-hidden" style={{ background: '#0d1b2e' }}>
         {/* Subtle blueprint grid background */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
           <svg className="absolute inset-0 w-full h-full opacity-[0.12]" xmlns="http://www.w3.org/2000/svg">
@@ -164,19 +164,21 @@ export default function Home() {
               </p>
             </div>
 
-            {/* Animated architectural house */}
-            <div className="relative">
-              <div className="rounded-2xl border border-amber-500/15 bg-slate-950/40 p-4 sm:p-6 backdrop-blur-sm">
-                <HouseIllustration />
-                {/* Floating estimate chip */}
-                <div
-                  className="house-anim-labels absolute -bottom-4 -right-4 sm:bottom-6 sm:right-6 rounded-lg border border-amber-400/30 bg-slate-950/90 px-4 py-3 shadow-xl shadow-black/40"
-                  style={{ animationDelay: '4.3s' }}
-                >
-                  <div className="text-[10px] uppercase tracking-widest text-white/50 mb-1">Estimated range</div>
-                  <div className="text-xl font-bold text-amber-400 font-mono">$112K — $186K</div>
-                  <div className="text-[11px] text-white/40 mt-0.5">1,240 sq ft · 5 rooms</div>
-                </div>
+            {/* Hero house illustration */}
+            <div className="relative flex justify-center lg:justify-end">
+              <img
+                src={heroHouse}
+                alt="Exploded isometric view of a house frame with AI-labeled rooms — Living, Kitchen, BR1, BR2, Bath"
+                className="w-full max-w-2xl mx-auto"
+                draggable={false}
+              />
+              {/* Floating estimate chip */}
+              <div
+                className="absolute bottom-6 right-0 sm:right-6 rounded-lg border border-amber-400/30 bg-slate-950/90 px-4 py-3 shadow-xl shadow-black/40"
+              >
+                <div className="text-[10px] uppercase tracking-widest text-white/50 mb-1">Estimated range</div>
+                <div className="text-xl font-bold text-amber-400 font-mono">$112K — $186K</div>
+                <div className="text-[11px] text-white/40 mt-0.5">1,240 sq ft · 5 rooms</div>
               </div>
             </div>
           </div>
