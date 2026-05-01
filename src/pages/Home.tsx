@@ -165,13 +165,15 @@ export default function Home() {
               </p>
             </div>
 
-            {/* Hero house illustration */}
+            {/* Hero house illustration — no bg/border/padding so transparent PNG
+                sits flush on the hero section's navy gradient */}
             <div className="relative flex justify-center lg:justify-end">
               <img
                 src={heroHouse}
                 alt="Exploded isometric view of a house frame with AI-labeled rooms — Living, Kitchen, BR1, BR2, Bath"
-                className="w-full max-w-2xl mx-auto"
+                className="w-full max-w-2xl mx-auto block"
                 draggable={false}
+                style={{ background: 'none', border: 'none', boxShadow: 'none' }}
               />
               {/* Floating estimate chip */}
               <div
