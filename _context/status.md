@@ -1,36 +1,19 @@
-# Project Status — mytakeoff.ai Redesign
+# Project Status
 
-**Last updated:** 2026-04-21
+**Current phase:** Phase 3 — Homepage implementation
+**Status:** Homepage hero complete (illustration, copy, sizing). Remaining homepage sections functional but unpolished.
 
-## Current Phase
+## Done
+- Phase 0: Bridge files
+- Phase 1: Copy deck
+- Phase 2: Visual design direction
+- Phase 3a: Homepage hero (illustration + copy + responsive sizing)
 
-**Phase 1: Copy strategy + full copy deck** ✅ Complete
+## Next up
+- Phase 3b: Implement Analyze, Results, Pricing pages using `_context/copy-deck.md` and homepage visual language
+- Phase 3c: Visual polish pass across all four pages
+- Phase 3d: Merge `redesign/copy-refresh` → `main`, verify production at mytakeoff.ai
+- Phase 5: Write portfolio case study (one-pager)
 
-## Next Up
-
-**Phase 2: Visual design direction**
-- Design refresh using Claude Design
-- References: `_context/copy-deck.md` for copy, `_context/positioning.md` for tone
-
-## Phase Overview
-
-| Phase | Description | Status |
-|---|---|---|
-| 0 | Scaffold bridge files (CLAUDE.md, _context/*.md) | ✅ Complete |
-| 1 | Copy strategy + full copy deck | ✅ Complete |
-| 2 | Visual design direction (Claude Design) | 🔜 Next |
-| 3 | Implementation in codebase (Claude Code) | ⬜ Pending |
-| 4 | Outreach email alignment (21 emails) | ⬜ Pending |
-| 5 | Review + polish | ⬜ Pending |
-
-## Bridge Files Status
-
-| File | Purpose | Status |
-|---|---|---|
-| `CLAUDE.md` | Claude Code auto-reads this | ✅ Written |
-| `_context/PRD.md` | Scoped requirements | ✅ Written |
-| `_context/positioning.md` | Messaging framework | ✅ Written |
-| `_context/accuracy-truth.md` | Honest accuracy numbers | ✅ Written |
-| `_context/decisions.md` | Running decision log | ✅ Written (9 decisions logged) |
-| `_context/status.md` | This file | ✅ Written |
-| `_context/copy-deck.md` | All page copy | ✅ Written |
+## Deferred
+- Phase 4: Outreach emails (21 contractor emails) — not needed for portfolio goal
