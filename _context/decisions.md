@@ -79,3 +79,9 @@
 **Decision:** All copy uses commas, periods, parentheses, or hyphens instead of em dashes.
 
 **Rationale:** Founder preference.
+
+## 2026-05-01
+
+**Goal shift:** Project repositioned from beta launch to portfolio piece (layoff in 4–8 weeks). New priority order: finish Analyze/Results/Pricing pages → visual polish across all pages → merge to main → write case study. Phase 4 (outreach emails) deferred indefinitely.
+
+**Hero illustration:** Replaced animated SVG with ChatGPT-generated exploded isometric (orange linework on transparent PNG, `public/hero-house.png`). Sized via `lg:scale-110 xl:scale-125` rather than `max-w-*` to actually fill the hero column.
