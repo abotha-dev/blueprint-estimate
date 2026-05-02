@@ -25,13 +25,16 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full bg-[#0A0A0A]/90 backdrop-blur-md border-b border-[rgba(255,255,255,0.08)]">
       <div className="container flex h-16 items-center justify-between">
-        <Link to="/" className="flex items-center gap-2.5 group">
-          <TakeoffLogo size={36} />
+        <Link to="/" className="flex items-center gap-3 group">
+          <TakeoffLogo className="text-amber-500 w-7 h-7" />
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-lg text-[rgba(255,255,255,0.9)] group-hover:text-blue-400 transition-[color] duration-150 ease-out">
-              Takeoff.ai
+            <span
+              className="font-semibold text-lg text-white group-hover:text-amber-400 transition-[color] duration-150 ease-out"
+              style={{ letterSpacing: '-0.02em' }}
+            >
+              mytakeoff.ai
             </span>
-            <span className="rounded-full border border-blue-400/30 bg-blue-500/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.12em] text-blue-300">
+            <span className="rounded-full border border-amber-400/30 bg-amber-500/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.12em] text-amber-300">
               Beta
             </span>
           </div>
