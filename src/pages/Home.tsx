@@ -171,13 +171,13 @@ export default function Home() {
               <img
                 src={heroHouse}
                 alt="Exploded isometric view of a house frame with AI-labeled rooms — Living, Kitchen, BR1, BR2, Bath"
-                className="w-full max-w-2xl mx-auto block"
+                className="w-full max-w-3xl lg:max-w-4xl mx-auto lg:mx-0 block"
                 draggable={false}
                 style={{ background: 'none', border: 'none', boxShadow: 'none' }}
               />
-              {/* Floating estimate chip */}
+              {/* Floating estimate chip — anchored to bottom-right of the now-larger illustration */}
               <div
-                className="absolute bottom-6 right-0 sm:right-6 rounded-lg border border-amber-400/30 bg-slate-950/90 px-4 py-3 shadow-xl shadow-black/40"
+                className="absolute bottom-8 lg:bottom-12 right-2 sm:right-4 lg:right-8 rounded-lg border border-amber-400/30 bg-slate-950/90 px-4 py-3 shadow-xl shadow-black/40"
               >
                 <div className="text-[10px] uppercase tracking-widest text-white/50 mb-1">Estimated range</div>
                 <div className="text-xl font-bold text-amber-400 font-mono">$112K — $186K</div>
