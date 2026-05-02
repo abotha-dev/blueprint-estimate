@@ -270,9 +270,8 @@ export default function Home() {
                     Best Fit
                   </span>
                 )}
-                <div className="w-11 h-11 rounded-lg bg-slate-900 flex items-center justify-center mb-5">
-                  <seg.icon className="w-5 h-5 text-amber-400" />
-                </div>
+                {/* Flat amber line icon — matches "What's in your estimate" style */}
+                <seg.icon className="w-6 h-6 text-amber-500 mb-5" strokeWidth={1.75} />
                 <h3 className="text-lg font-semibold text-slate-900 mb-3">
                   {seg.heading}
                 </h3>
