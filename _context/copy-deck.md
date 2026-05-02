@@ -276,34 +276,26 @@ CTA: Get Started
 Tagline: For contractors and estimators.
 Features:
 - Unlimited estimates
-- Room detection + area calc
-- Structural shell estimates
-- Cost breakdown + materials
 - Cost comparison reports (Budget vs Standard vs Premium materials)
-- PDF report export
 CTA: Get Pro
-
-*Note: Agency tier ($199/month) is paused until team features (shared project library, multi-seat) are built. Do not display until confirmed ready.*
-
-*Note: Pricing is under review. $79/month may be adjusted after beta feedback. See decisions.md for context.*
 
 ---
 
 ### Pricing FAQ Section
 
-**Q: Is this a replacement for my real takeoff?**
+**Q: Is this a replacement for my real takeoff?
 A: No. mytakeoff.ai gives you a ballpark range. A fast sanity check to help you decide which leads are worth a full estimate. Your real takeoff process stays exactly the same.
 
-**Q: How accurate are the estimates?**
+**Q: How accurate are the estimates?
 A: Accuracy depends on your input. Clean, scaled floor plans from design software produce the best results. The tool identifies rooms with high reliability and gives you low/mid/high cost ranges based on standard residential assumptions. It's a starting point, not a final number.
 
-**Q: What types of projects does this work best for?**
+**Q: What types of projects does this work best for?
 A: Single-story residential, especially ADUs. The engine assumes slab-on-grade foundation, gable roof, and standard single-story construction. It's less suited for multi-story, complex rooflines, or remodels involving demolition and existing conditions.
 
-**Q: What if I need to cancel?**
+**Q: What if I need to cancel?
 A: Cancel anytime from your account dashboard. No contracts, no cancellation fees.
 
-**Q: Can I share the PDF report with my clients?**
+**Q: Can I share the PDF report with my clients?
 A: Yes. The downloadable PDF is designed to be shared. Use it to frame budget conversations with clients.
 
 ---
