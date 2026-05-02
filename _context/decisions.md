@@ -85,3 +85,11 @@
 **Goal shift:** Project repositioned from beta launch to portfolio piece (layoff in 4–8 weeks). New priority order: finish Analyze/Results/Pricing pages → visual polish across all pages → merge to main → write case study. Phase 4 (outreach emails) deferred indefinitely.
 
 **Hero illustration:** Replaced animated SVG with ChatGPT-generated exploded isometric (orange linework on transparent PNG, `public/hero-house.png`). Sized via `lg:scale-110 xl:scale-125` rather than `max-w-*` to actually fill the hero column.
+
+2026-05-02: Pricing direction — going with option 1 (real working Stripe 
+tiers, not waitlist mock). Rationale: portfolio realism. The story 
+"shipped real SaaS with working billing" is stronger than "designed 
+mock pricing." Stripe stays on as currently implemented. Phase 4 
+(outreach) remains deferred — not actively marketing, but signups will 
+be handled if they happen. Earlier note about "Join waitlist CTA" is 
+superseded by this entry.
