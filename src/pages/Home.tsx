@@ -212,9 +212,8 @@ export default function Home() {
                 className="rounded-xl border border-slate-200 bg-white p-7 hover:border-slate-300 transition-colors"
               >
                 <div className="flex items-center gap-3 mb-5">
-                  <div className="w-10 h-10 rounded-lg bg-slate-900 flex items-center justify-center">
-                    <step.icon className="w-5 h-5 text-amber-400" />
-                  </div>
+                  {/* Flat amber line icon — matches "What's in your estimate" style */}
+                  <step.icon className="w-6 h-6 text-amber-500" strokeWidth={1.75} />
                   <span className="text-xs font-mono text-slate-400">0{i + 1}</span>
                 </div>
                 <h3 className="text-lg font-semibold text-slate-900 mb-2 leading-snug">
