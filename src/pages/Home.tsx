@@ -112,9 +112,13 @@ export default function Home() {
       </header>
 
       {/* ─── Hero (dark slate) ───────────────────────────────────── */}
-      <section className="relative text-white overflow-hidden" style={{ background: '#0d1b2e' }}>
-        {/* Subtle blueprint grid background */}
-        <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+      {/* overflow-visible lets the scaled hero illustration bleed past
+          section bounds without being clipped */}
+      <section className="relative text-white overflow-visible" style={{ background: '#0d1b2e' }}>
+        {/* Subtle blueprint grid background — kept clipped so the amber
+            blur (-right-40) doesn't trigger horizontal page scroll now
+            that the parent section is overflow-visible */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
           <svg className="absolute inset-0 w-full h-full opacity-[0.12]" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <pattern id="hero-grid" width="48" height="48" patternUnits="userSpaceOnUse">
@@ -165,19 +169,22 @@ export default function Home() {
               </p>
             </div>
 
-            {/* Hero house illustration — no bg/border/padding so transparent PNG
-                sits flush on the hero section's navy gradient */}
-            <div className="relative flex justify-center lg:justify-end">
+            {/* Hero house illustration — overflow-visible lets the scaled
+                image bleed past the grid cell without being clipped */}
+            <div className="relative flex justify-center lg:justify-end overflow-visible">
               <img
                 src={heroHouse}
                 alt="Exploded isometric view of a house frame with AI-labeled rooms — Living, Kitchen, BR1, BR2, Bath"
-                className="w-full max-w-3xl lg:max-w-4xl mx-auto lg:mx-0 block"
+                className="w-full lg:scale-110 xl:scale-125 origin-center lg:origin-right block transition-transform"
                 draggable={false}
                 style={{ background: 'none', border: 'none', boxShadow: 'none' }}
               />
-              {/* Floating estimate chip — anchored to bottom-right of the now-larger illustration */}
+              {/* Floating estimate chip — anchored to bottom-right of the
+                  scaled illustration. Negative-bottom values at lg/xl push
+                  the chip down to follow the image as it grows beyond the
+                  wrapper bounds (origin-right scale extends image downward). */}
               <div
-                className="absolute bottom-8 lg:bottom-12 right-2 sm:right-4 lg:right-8 rounded-lg border border-amber-400/30 bg-slate-950/90 px-4 py-3 shadow-xl shadow-black/40"
+                className="absolute z-20 bottom-6 sm:bottom-8 lg:-bottom-2 xl:-bottom-6 right-2 sm:right-4 lg:right-4 xl:right-8 rounded-lg border border-amber-400/30 bg-slate-950/90 px-4 py-3 shadow-xl shadow-black/40"
               >
                 <div className="text-[10px] uppercase tracking-widest text-white/50 mb-1">Estimated range</div>
                 <div className="text-xl font-bold text-amber-400 font-mono">$112K — $186K</div>
