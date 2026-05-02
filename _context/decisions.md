@@ -56,6 +56,8 @@
 
 **Rationale:** With unbuilt features removed, Agency has insufficient differentiation from Pro. The team features (shared project library, multi-seat) need to be built first. Founder will revisit Agency tier after this project ships.
 
+**Status (2026-05-02):** Superseded. Agency tier dropped from scope. $79 Pro tier confirmed live per 2026-05-02 pricing direction. Reflected in commit cee0e53.
+
 ---
 
 ### Decision 007: Pro pricing under review pending beta feedback
@@ -63,6 +65,8 @@
 **Decision:** Hold Pro at $79/month ($59/month annual) for now. May adjust after beta tester feedback.
 
 **Rationale:** $79/month is mathematically defensible (saves one wasted takeoff per month). But the trust gap is real for a pre-launch product with no case studies. Options include launching at $79 with a beta discount ($29-39/month locked in), or launching at a lower permanent price ($49). Decision deferred until beta contractors provide feedback on perceived value.
+
+**Status (2026-05-02):** Superseded. Agency tier dropped from scope. $79 Pro tier confirmed live per 2026-05-02 pricing direction. Reflected in commit cee0e53.
 
 ---
 
