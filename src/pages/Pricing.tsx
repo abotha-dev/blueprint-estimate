@@ -78,7 +78,7 @@ export default function Pricing() {
       const checkoutUrl = await createCheckoutSession({
         plan: 'pro',
         interval: isAnnual ? 'annual' : 'monthly',
-        success_url: `${window.location.origin}/success`,
+        success_url: `${window.location.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${window.location.origin}/pricing`,
       });
       window.location.href = checkoutUrl;

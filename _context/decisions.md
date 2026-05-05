@@ -190,3 +190,15 @@ Resolution path (post-merge, requires backend repo work):
 For the redesign portfolio: this gap is documented in the case study
 as the first item in a backend cleanup pass. Frontend redesign is
 unblocked.
+
+2026-05-05: Success page restyle, fixed missing Stripe session_id
+placeholder. While restyling Success.tsx to use SiteHeader/SiteFooter
+and the new visual language, identified that Pricing.tsx's success_url
+was missing Stripe's required {CHECKOUT_SESSION_ID} placeholder.
+Without it, Stripe redirects subscribers to /success with no query
+string, which would route every real subscriber to the
+direct-navigation "Nothing to confirm here" branch instead of the
+"You're on Pro" confirmation. Fixed in the same diff.
+
+Pre-existing bug, not redesign-introduced. Surfaced because the
+redesign added the branching logic that exposed the missing placeholder.
