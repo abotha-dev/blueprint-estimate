@@ -97,3 +97,14 @@ mock pricing." Stripe stays on as currently implemented. Phase 4
 (outreach) remains deferred — not actively marketing, but signups will 
 be handled if they happen. Earlier note about "Join waitlist CTA" is 
 superseded by this entry.
+
+2026-05-02: Results page deep-link compromise. The new Analyze page
+navigates to /results with React Router state, not /results/:id, because
+the parse API returns the full result object but no analysis ID. A page
+refresh on /results loses the estimate. Revisit when redesigning Results:
+if Results.tsx can load by ID from upload_history, switch Analyze's
+navigate to use the inserted row's ID.
+
+2026-05-02: localStorage 'takeoff_guest_analyses' counter is dead code
+post-Decision-008. The new Analyze page does not read or write it.
+Cleanup of references elsewhere in the app pending.
