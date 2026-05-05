@@ -105,6 +105,15 @@ refresh on /results loses the estimate. Revisit when redesigning Results:
 if Results.tsx can load by ID from upload_history, switch Analyze's
 navigate to use the inserted row's ID.
 
+**Status (2026-05-04):** Resolved. See 2026-05-04 entry below.
+
 2026-05-02: localStorage 'takeoff_guest_analyses' counter is dead code
 post-Decision-008. The new Analyze page does not read or write it.
 Cleanup of references elsewhere in the app pending.
+
+2026-05-04: Results deep-link resolved. Analyze now captures the
+upload_history row id via .select('id').single() and navigates to
+/results/:id (with a fallback to /results if the insert fails). The new
+Results page loads by id from upload_history, filtered by user_id —
+which also closes a pre-existing access-control gap in the prior
+Results query that selected by id only.

@@ -60,6 +60,7 @@ export default function Analyze() {
   const [stepIndex, setStepIndex] = useState(0);
   const [validationError, setValidationError] = useState<string | null>(null);
   const [isDragActive, setIsDragActive] = useState(false);
+  const [historyId, setHistoryId] = useState<string | null>(null);
 
   const stepTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const step4StartedAtRef = useRef<number | null>(null);
@@ -127,6 +128,7 @@ export default function Analyze() {
 
   const handleAnalyze = async () => {
     if (!selectedFile) return;
+    setHistoryId(null);
     setPhase('processing');
     setStepIndex(0);
     step4StartedAtRef.current = null;
@@ -155,23 +157,29 @@ export default function Analyze() {
     const wait = Math.max(0, STEP4_MIN_MS - elapsed);
     if (wait > 0) await new Promise((r) => setTimeout(r, wait));
 
-    const { error: historyError } = await supabase.from('upload_history').insert({
-      user_id: user.id,
-      filename: selectedFile.name,
-      file_size: selectedFile.size,
-      rooms_detected: result.rooms.length,
-      total_area: result.total_area,
-      total_estimate: result.cost_breakdown.grand_total,
-      quality_tier: result.quality_tier,
-      results_summary: result,
-    });
-    if (historyError) {
+    const { data: historyRow, error: historyError } = await supabase
+      .from('upload_history')
+      .insert({
+        user_id: user.id,
+        filename: selectedFile.name,
+        file_size: selectedFile.size,
+        rooms_detected: result.rooms.length,
+        total_area: result.total_area,
+        total_estimate: result.cost_breakdown.grand_total,
+        quality_tier: result.quality_tier,
+        results_summary: result,
+      })
+      .select('id')
+      .single();
+    if (historyError || !historyRow) {
       console.error('Failed to save upload history:', historyError);
       toast({
         title: 'Note',
         description: "Analysis complete, but we couldn't save to your history.",
         variant: 'destructive',
       });
+    } else {
+      setHistoryId(historyRow.id);
     }
 
     setPhase('complete');
@@ -179,7 +187,8 @@ export default function Analyze() {
 
   const handleViewResults = () => {
     if (!state.result) return;
-    navigate('/results', {
+    const path = historyId ? `/results/${historyId}` : '/results';
+    navigate(path, {
       state: { result: state.result, thumbnail: filePreview, isGuest: false },
     });
   };
@@ -188,6 +197,7 @@ export default function Analyze() {
     setPhase('idle');
     setStepIndex(0);
     setValidationError(null);
+    setHistoryId(null);
     reset();
   };
 
