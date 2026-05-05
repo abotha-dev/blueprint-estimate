@@ -272,11 +272,16 @@ Features:
 - PDF report export
 CTA: Get Started
 
-**Tier 2: Pro - $79/month ($59/month billed annually)**
+**Tier 2: Pro — $79/month ($59/month billed annually)**
+
 Tagline: For contractors and estimators.
+
 Features:
+
+Everything in Free, plus:
 - Unlimited estimates
 - Cost comparison reports (Budget vs Standard vs Premium materials)
+
 CTA: Get Pro
 
 ---
