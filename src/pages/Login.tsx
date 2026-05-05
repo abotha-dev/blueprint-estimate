@@ -3,8 +3,9 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Loader2, LogIn } from 'lucide-react';
-import { Layout } from '@/components/layout/Layout';
+import { Loader2 } from 'lucide-react';
+import SiteHeader from '@/components/layout/SiteHeader';
+import SiteFooter from '@/components/layout/SiteFooter';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -53,70 +54,93 @@ export default function Login() {
   };
 
   return (
-    <Layout>
-      <div className="relative overflow-hidden bg-[#0A0A0A] text-[rgba(255,255,255,0.9)] min-h-[calc(100vh-64px)]">
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-600/10 via-transparent to-transparent" aria-hidden="true" />
-        <div className="absolute -top-40 left-1/2 h-[420px] w-[900px] -translate-x-1/2 rounded-full bg-blue-600/10 blur-[120px]" aria-hidden="true" />
+    <div className="min-h-screen bg-white text-slate-900 flex flex-col">
+      <SiteHeader />
 
-        <div className="container relative py-16 md:py-24">
-          <div className="max-w-md mx-auto">
-            <div className="text-center mb-8">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-card bg-blue-500/10 text-blue-400 mb-4">
-                <LogIn className="w-6 h-6" strokeWidth={1.5} />
-              </div>
-              <h1 className="text-2xl md:text-3xl font-bold mb-2" style={{ letterSpacing: '-0.03em' }}>
-                Welcome Back
-              </h1>
-              <p className="text-[rgba(255,255,255,0.5)]">Sign in to your account to continue</p>
-            </div>
-
-            <div className="bg-[#18181B] border border-[rgba(255,255,255,0.08)] rounded-card p-6 md:p-8 shadow-card">
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-[rgba(255,255,255,0.7)]">Email</FormLabel>
-                        <FormControl>
-                          <Input type="email" placeholder="you@example.com" {...field} disabled={isLoading} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-[rgba(255,255,255,0.7)]">Password</FormLabel>
-                        <FormControl>
-                          <Input type="password" placeholder="••••••••" {...field} disabled={isLoading} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
-                    {isLoading ? (
-                      <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Signing in...</>
-                    ) : 'Sign In'}
-                  </Button>
-                </form>
-              </Form>
-
-              <div className="mt-6 text-center text-sm text-[rgba(255,255,255,0.5)]">
-                Don't have an account?{' '}
-                <Link to="/signup" className="text-blue-400 hover:text-blue-300 font-medium transition-[color] duration-150 ease-out">
-                  Sign up
-                </Link>
-              </div>
-            </div>
+      <main className="flex-1 bg-stone-100 py-20 md:py-28">
+        <div className="max-w-md mx-auto px-6">
+          <div className="text-center mb-10">
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-slate-900 leading-tight mb-3">
+              Log in to mytakeoff.ai
+            </h1>
+            <p className="text-slate-600 leading-relaxed">
+              Sign in to your account to continue.
+            </p>
           </div>
+
+          <div className="rounded-2xl border border-slate-200 bg-white p-6 md:p-8 shadow-sm">
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="email"
+                          placeholder="you@example.com"
+                          autoComplete="email"
+                          disabled={isLoading}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="password"
+                          placeholder="••••••••"
+                          autoComplete="current-password"
+                          disabled={isLoading}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button
+                  type="submit"
+                  size="lg"
+                  disabled={isLoading}
+                  className="w-full gap-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold border-0 shadow-lg shadow-amber-500/20 disabled:opacity-80"
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Signing in...
+                    </>
+                  ) : (
+                    'Log in'
+                  )}
+                </Button>
+              </form>
+            </Form>
+          </div>
+
+          <p className="mt-6 text-center text-sm text-slate-600">
+            Don't have an account?{' '}
+            <Link
+              to="/signup"
+              className="text-amber-600 hover:text-amber-700 font-medium transition-colors"
+            >
+              Sign up
+            </Link>
+          </p>
         </div>
-      </div>
-    </Layout>
+      </main>
+
+      <SiteFooter />
+    </div>
   );
 }

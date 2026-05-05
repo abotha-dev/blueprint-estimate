@@ -148,3 +148,12 @@ landing page. Next prompt scope: Login, Signup, and Dashboard. Defer
 Success to a later isolated prompt after Pricing ships, so Success can
 be tested end-to-end via a real test-mode Stripe checkout rather than
 restyled in a multi-page diff with no verification path.
+
+2026-05-05: Known debt surfaced during Login/Signup/Dashboard restyle.
+Two pre-redesign quirks observed during the restyle, neither blocking,
+both styling-pass-adjacent and to be handled in a later cleanup pass:
+(1) Signup success toast still says "Welcome to Takeoff.ai." — old brand,
+should be "mytakeoff.ai" to match the redesign positioning.
+(2) Dashboard's SUBSCRIPTION_LABELS still includes an 'agency' entry
+despite Decision 006 cutting the Agency tier; the path is reachable if a
+user record has subscription_status = 'agency' in the DB.
