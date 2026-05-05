@@ -157,3 +157,36 @@ should be "mytakeoff.ai" to match the redesign positioning.
 (2) Dashboard's SUBSCRIPTION_LABELS still includes an 'agency' entry
 despite Decision 006 cutting the Agency tier; the path is reachable if a
 user record has subscription_status = 'agency' in the DB.
+
+2026-05-05: Stripe configuration debt — pre-existing, scoped out of
+redesign. Verified during Pricing test on Vercel preview that the
+Stripe integration has pre-existing configuration drift unrelated to
+the redesign:
+(1) Backend on Render uses live Stripe keys, not test keys. No test
+mode environment exists. End-to-end checkout verification was not
+possible without setting up a test environment, which is out of scope
+for the frontend redesign.
+(2) Stripe product pricing is stale: configured at $49/month for Pro.
+Website Pricing page advertises $79/month ($59 annual). Backend
+resolves plan='pro', interval='monthly' to a $49 price ID.
+(3) Stripe product metadata is stale: merchant name "Takeoff.ai" (not
+"mytakeoff.ai"), product description "For contractors who need more"
+(not "For contractors and estimators").
+
+This is pre-existing debt, not redesign debt. The frontend correctly
+redirects to Stripe with the configured intervals and the integration
+is wired end-to-end at the code level. The configuration mismatch
+surfaces only on actual checkout attempts.
+
+Resolution path (post-merge, requires backend repo work):
+- Update Pro product in Stripe dashboard (name, description).
+- Archive existing $49 price; create new $79 monthly and $708 annual
+  prices.
+- Update backend price ID mapping (in blueprint-intelligence-engine
+  repo).
+- Set up Stripe test mode and configure backend to use test keys in
+  non-production environments.
+
+For the redesign portfolio: this gap is documented in the case study
+as the first item in a backend cleanup pass. Frontend redesign is
+unblocked.
