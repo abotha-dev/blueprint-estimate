@@ -129,3 +129,11 @@ template lives in blueprint-intelligence-engine, which is not being
 touched. Flag for the portfolio case study: frontend redesigned for
 honest positioning; PDF template still pre-redesign and needs a
 matching pass when the engine repo is in scope again.
+
+2026-05-05: Shared layout components decision. After shipping Home,
+Analyze, and Results with inlined header/footer, extracting SiteHeader
+and SiteFooter into shared components before adding more pages.
+Trigger: login/signup still on the old dark Layout palette (visible
+inconsistency in the auth flow), and Pricing coming next would
+compound the duplication. Component extraction now keeps scope from
+sprawling later.
