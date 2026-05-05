@@ -266,7 +266,7 @@ export default function Dashboard() {
                               </p>
                               {upload.total_area ? (
                                 <p className="text-sm text-slate-500 tabular-nums">
-                                  {upload.total_area.toLocaleString()} sq ft
+                                  {Math.round(upload.total_area).toLocaleString()} sq ft
                                 </p>
                               ) : null}
                             </div>
