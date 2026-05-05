@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { ArrowRight, Check, FileText, Upload, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { TakeoffLogo } from '@/components/ui/TakeoffLogo';
+import SiteHeader from '@/components/layout/SiteHeader';
+import SiteFooter from '@/components/layout/SiteFooter';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { useAnalysis } from '@/hooks/useAnalysis';
 import { supabase } from '@/integrations/supabase/client';
@@ -203,45 +204,7 @@ export default function Analyze() {
 
   return (
     <div className="min-h-screen bg-white text-slate-900 flex flex-col">
-      {/* Nav — replicated from Home, with logged-in nav (Dashboard) in
-          place of Login/Get Started since the page is auth-gated. */}
-      <header className="bg-slate-900 text-white">
-        <div className="max-w-7xl mx-auto px-6 flex h-16 items-center justify-between">
-          <Link to="/" className="flex items-center gap-2.5 group">
-            <TakeoffLogo size={32} />
-            <span className="font-semibold text-base tracking-tight">mytakeoff.ai</span>
-          </Link>
-          <nav className="flex items-center gap-1">
-            <a href="/#how-it-works" className="hidden sm:inline-flex">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-white/70 hover:text-white hover:bg-white/5"
-              >
-                How It Works
-              </Button>
-            </a>
-            <Link to="/pricing" className="hidden sm:inline-flex">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-white/70 hover:text-white hover:bg-white/5"
-              >
-                Pricing
-              </Button>
-            </Link>
-            <Link to="/dashboard">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-white/70 hover:text-white hover:bg-white/5"
-              >
-                Dashboard
-              </Button>
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <SiteHeader />
 
       <section className="flex-1 bg-stone-100 py-20 md:py-28">
         <div className="max-w-3xl mx-auto px-6">
@@ -425,81 +388,7 @@ export default function Analyze() {
         </div>
       </section>
 
-      {/* Footer — replicated from Home. */}
-      <footer className="bg-slate-950 text-white/60 border-t border-white/5">
-        <div className="max-w-7xl mx-auto px-6 py-14">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div className="col-span-2 md:col-span-1">
-              <div className="flex items-center gap-2 mb-3">
-                <TakeoffLogo size={28} />
-                <span className="font-semibold text-white">mytakeoff.ai</span>
-              </div>
-              <p className="text-sm leading-relaxed">
-                Instant ballpark estimates for residential remodels and ADUs.
-              </p>
-            </div>
-            <div>
-              <div className="text-xs uppercase tracking-widest text-white/40 font-semibold mb-3">
-                Product
-              </div>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <a href="/#how-it-works" className="hover:text-amber-400 transition-colors">
-                    How It Works
-                  </a>
-                </li>
-                <li>
-                  <Link to="/pricing" className="hover:text-amber-400 transition-colors">
-                    Pricing
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/login" className="hover:text-amber-400 transition-colors">
-                    Login
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <div className="text-xs uppercase tracking-widest text-white/40 font-semibold mb-3">
-                Company
-              </div>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <a href="#" className="hover:text-amber-400 transition-colors">
-                    About
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-amber-400 transition-colors">
-                    Contact
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <div className="text-xs uppercase tracking-widest text-white/40 font-semibold mb-3">
-                Legal
-              </div>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <a href="#" className="hover:text-amber-400 transition-colors">
-                    Privacy Policy
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-amber-400 transition-colors">
-                    Terms of Service
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="mt-12 pt-6 border-t border-white/5 text-xs text-white/35">
-            © {new Date().getFullYear()} mytakeoff.ai
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }
