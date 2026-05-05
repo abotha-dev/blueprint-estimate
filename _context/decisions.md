@@ -137,3 +137,14 @@ Trigger: login/signup still on the old dark Layout palette (visible
 inconsistency in the auth flow), and Pricing coming next would
 compound the duplication. Component extraction now keeps scope from
 sprawling later.
+
+2026-05-05: Refactor verified, scope of next pass. SiteHeader and
+SiteFooter shipped and verified on Home, Analyze, and Results.
+Logged-in users see Dashboard + Logout in header; logged-out users
+see Login + Get Started. Outstanding pages still on old
+Layout/Header/Footer (dark palette): Dashboard, Login, Signup, Success.
+Visible seam in the auth flow because Dashboard is the post-login
+landing page. Next prompt scope: Login, Signup, and Dashboard. Defer
+Success to a later isolated prompt after Pricing ships, so Success can
+be tested end-to-end via a real test-mode Stripe checkout rather than
+restyled in a multi-page diff with no verification path.
