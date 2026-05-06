@@ -1,73 +1,59 @@
-# Welcome to your Lovable project
+# mytakeoff.ai
 
-## Project info
+Instant ballpark estimates for residential remodels and ADUs.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+mytakeoff.ai is an AI-powered cost estimator for residential contractors. Upload a floor plan (PDF or image), get a parsed room layout, material quantities, and a low/mid/high cost range in about 60 seconds. It's a fast filter that runs before a real takeoff. A sanity check to decide which leads are worth a few hours of estimating, not a replacement for one. Best fit is single-story residential, especially ADUs.
 
-## How can I edit this code?
+## Status
 
-There are several ways of editing your application.
+This repo is the frontend half of mytakeoff.ai, redesigned as a portfolio piece around honest positioning (lead qualification, not bid generation). The parsing and cost engine lives in a separate repo, [blueprint-intelligence-engine](https://github.com/abotha-dev/blueprint-intelligence-engine), and is out of scope for this redesign. Stripe checkout and customer portal are wired end-to-end at the code level; configuration drift in the live Stripe account is documented as known debt in `_context/decisions.md`.
 
-**Use Lovable**
+## Tech stack
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+- Vite + React + TypeScript
+- Tailwind CSS + shadcn/ui
+- Supabase (auth + storage)
+- TanStack Query
+- Stripe (checkout + customer portal)
+- Vercel (deployment)
 
-Changes made via Lovable will be committed automatically to this repo.
+## Local development
 
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+Prerequisites: Node 18+ and npm.
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+git clone https://github.com/abotha-dev/blueprint-estimate.git
+cd blueprint-estimate
+npm install
+```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+Create a `.env` at the repo root with:
 
-# Step 3: Install the necessary dependencies.
-npm i
+```
+VITE_SUPABASE_URL=...
+VITE_SUPABASE_PUBLISHABLE_KEY=...
+VITE_API_URL=...
+```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+`VITE_API_URL` should point at the running `blueprint-intelligence-engine` backend, locally if you're running it, or the deployed Render instance if you're not. If unset, the frontend falls back to the production Render URL.
+
+```sh
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## Project structure
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+- `src/pages/` - route components (Home, Analyze, Results, Pricing, Login, Signup, Dashboard, Success)
+- `src/components/layout/` - shared SiteHeader and SiteFooter
+- `src/components/ui/` - shadcn primitives
+- `src/services/` - API client (`api.ts`)
+- `src/hooks/` - custom hooks (auth, analysis flow, toast)
+- `_context/` - bridge files for the redesign (positioning, accuracy guardrails, copy deck, decisions log)
 
-**Use GitHub Codespaces**
+## Case study
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+Case study forthcoming.
 
-## What technologies are used for this project?
+## License
 
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+All rights reserved.
