@@ -202,3 +202,23 @@ direct-navigation "Nothing to confirm here" branch instead of the
 
 Pre-existing bug, not redesign-introduced. Surfaced because the
 redesign added the branching logic that exposed the missing placeholder.
+
+2026-05-06: Infrastructure cleanup pre-merge. Migrated two hardcoded
+backend URLs (Dashboard and Pricing portal session calls) to
+API_BASE_URL exported from services/api.ts. Single source of truth,
+env-var driven with production fallback preserved.
+
+Deleted 18 files post-redesign:
+- 3 layout components (Layout, Header, Footer) — replaced by
+  SiteHeader/SiteFooter.
+- 8 old Results sub-components — replaced by inlined sections in
+  the new Results page.
+- 4 old Upload sub-components — replaced by inlined logic in the
+  new Analyze page.
+- 2 old Home hero components — replaced by static ChatGPT-rendered
+  illustration.
+- 1 legacy NavLink wrapper — replaced by shadcn Button + react-
+  router Link.
+
+All 18 had zero importers at time of deletion. Git history preserves
+them if any need revisiting.

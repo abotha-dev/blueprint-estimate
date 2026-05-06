@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import { API_BASE_URL } from '@/services/api';
 import { UploadHistory } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
 
@@ -49,7 +50,7 @@ export default function Dashboard() {
     setLoadingPortal(true);
     try {
       const response = await fetch(
-        `https://takeoff-api-uyzv.onrender.com/api/v1/create-portal-session?customer_id=${profile.stripe_customer_id}&return_url=${encodeURIComponent(window.location.href)}`,
+        `${API_BASE_URL}/api/v1/create-portal-session?customer_id=${profile.stripe_customer_id}&return_url=${encodeURIComponent(window.location.href)}`,
         { method: 'POST' }
       );
       const data = await response.json();

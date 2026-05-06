@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/accordion';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { createCheckoutSession } from '@/services/api';
+import { API_BASE_URL, createCheckoutSession } from '@/services/api';
 import { cn } from '@/lib/utils';
 
 const FREE_FEATURES = [
@@ -107,7 +107,7 @@ export default function Pricing() {
     setLoadingPortal(true);
     try {
       const response = await fetch(
-        `https://takeoff-api-uyzv.onrender.com/api/v1/create-portal-session?customer_id=${profile.stripe_customer_id}&return_url=${encodeURIComponent(window.location.href)}`,
+        `${API_BASE_URL}/api/v1/create-portal-session?customer_id=${profile.stripe_customer_id}&return_url=${encodeURIComponent(window.location.href)}`,
         { method: 'POST' }
       );
       const data = await response.json();
