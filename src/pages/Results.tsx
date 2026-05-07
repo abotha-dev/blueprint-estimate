@@ -1,469 +1,365 @@
-import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
-import { Layout } from '@/components/layout/Layout';
-import { StickySummary } from '@/components/results/StickySummary';
-import { BlueprintSummary } from '@/components/results/BlueprintSummary';
-import { RoomBreakdown } from '@/components/results/RoomBreakdown';
-import { CostTable } from '@/components/results/CostTable';
-import { TierComparison } from '@/components/results/TierComparison';
-import { ResultActions } from '@/components/results/ResultActions';
-import { AnalysisSettings } from '@/components/results/AnalysisSettings';
-import { PaywallOverlay } from '@/components/results/PaywallOverlay';
-import { AnalysisResult, QualityTier, MaterialItem, CostBreakdown, DemoLineItem } from '@/types';
-import { generatePDFReport } from '@/services/api';
-import { AlertCircle, ArrowRight, RefreshCw, HardHat } from 'lucide-react';
+import { ArrowRight, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
+import SiteHeader from '@/components/layout/SiteHeader';
+import SiteFooter from '@/components/layout/SiteFooter';
+import { useAuthContext } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { generatePDFReport } from '@/services/api';
+import type { AnalysisResult, QualityTier } from '@/types';
+import { cn } from '@/lib/utils';
 
-const formatCurrency = (value: number) => `$${(value || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+type LoadState = 'loading' | 'ready' | 'not-found';
+
+const TIERS: Array<{ key: QualityTier; label: string; description: string }> = [
+  {
+    key: 'budget',
+    label: 'Budget',
+    description: 'Basic materials and finishes. The floor, not the ceiling.',
+  },
+  {
+    key: 'standard',
+    label: 'Standard',
+    description: 'Mid-range materials and typical contractor pricing.',
+  },
+  {
+    key: 'premium',
+    label: 'Premium',
+    description: 'Higher-end materials and finishes. The ceiling, not the floor.',
+  },
+];
+
+function formatRoundedCurrency(value: number | undefined | null): string {
+  if (!value || !Number.isFinite(value)) return '$0';
+  return `$${(Math.round(value / 100) * 100).toLocaleString()}`;
+}
+
+function formatArea(value: number): string {
+  return `${Math.round(value).toLocaleString()} sq ft`;
+}
+
+function formatQuantity(value: number): string {
+  if (!Number.isFinite(value)) return '0';
+  return value % 1 === 0 ? value.toLocaleString() : value.toFixed(1);
+}
+
 export default function Results() {
-  const location = useLocation();
   const navigate = useNavigate();
+  const location = useLocation();
   const { id } = useParams<{ id?: string }>();
-  const { result: initialResult, thumbnail, isGuest } = (location.state || {}) as {
-    result?: AnalysisResult;
-    thumbnail?: string;
-    isGuest?: boolean;
-  };
+  const { user, loading: authLoading } = useAuthContext();
 
-  const [result, setResult] = useState<AnalysisResult | null>(initialResult || null);
-  const [selectedTier, setSelectedTier] = useState<QualityTier>(initialResult?.quality_tier || 'standard');
-  const [loadingHistory, setLoadingHistory] = useState(!!id && !initialResult);
-  const [remodelMode, setRemodelMode] = useState(false);
+  const [result, setResult] = useState<AnalysisResult | null>(() => {
+    const stateResult = (location.state as { result?: AnalysisResult } | null)?.result;
+    return stateResult ?? null;
+  });
+  const [loadState, setLoadState] = useState<LoadState>(() => {
+    const stateResult = (location.state as { result?: AnalysisResult } | null)?.result;
+    return stateResult ? 'ready' : 'loading';
+  });
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+  const [pdfError, setPdfError] = useState<string | null>(null);
 
-  // Load from history if navigated via /results/:id
   useEffect(() => {
-    if (!id || initialResult) return;
-    async function loadFromHistory() {
+    if (result) return;
+    if (authLoading) return;
+    if (!id || !user) {
+      setLoadState('not-found');
+      return;
+    }
+
+    let cancelled = false;
+    (async () => {
       const { data, error } = await supabase
         .from('upload_history')
-        .select('results_summary, quality_tier')
+        .select('results_summary')
         .eq('id', id)
-        .single();
+        .eq('user_id', user.id)
+        .maybeSingle();
+      if (cancelled) return;
       if (error || !data?.results_summary) {
-        navigate('/analyze');
+        setLoadState('not-found');
         return;
       }
-      const saved = data.results_summary as unknown as AnalysisResult;
-      setResult(saved);
-      setSelectedTier((data.quality_tier as QualityTier) || saved.quality_tier || 'standard');
-      setLoadingHistory(false);
-    }
-    loadFromHistory();
-  }, [id, initialResult, navigate]);
-
-  // Redirect if no result and not loading
-  useEffect(() => {
-    if (!loadingHistory && !result) {
-      navigate('/analyze');
-    }
-  }, [result, loadingHistory, navigate]);
-
-  if (loadingHistory) {
-    return (
-      <Layout>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-[rgba(255,255,255,0.5)]">Loading estimate...</div>
-        </div>
-      </Layout>
-    );
-  }
-
-  // Calculate the price multiplier based on selected tier vs standard tier
-  const tierMultiplier = useMemo(() => {
-    if (!result?.tier_comparisons) return 1;
-    
-    const standardTier = result.tier_comparisons.find(t => t.tier === 'standard');
-    const selectedTierData = result.tier_comparisons.find(t => t.tier === selectedTier);
-    
-    if (!standardTier || !selectedTierData || standardTier.grand_total === 0) return 1;
-    
-    return selectedTierData.grand_total / standardTier.grand_total;
-  }, [result?.tier_comparisons, selectedTier]);
-
-  // Adjust materials and cost breakdown based on selected tier
-  const adjustedMaterials = useMemo((): MaterialItem[] => {
-    if (!result?.materials) return [];
-    
-    return result.materials.map(item => ({
-      ...item,
-      unit_cost: item.unit_cost * tierMultiplier,
-      material_cost: item.material_cost * tierMultiplier,
-      labor_cost: item.labor_cost * tierMultiplier,
-      total_cost: item.total_cost * tierMultiplier,
-    }));
-  }, [result?.materials, tierMultiplier]);
-
-  const adjustedCostBreakdown = useMemo((): CostBreakdown => {
-    if (!result?.cost_breakdown) {
-      return {
-        materials_subtotal: 0,
-        labor_subtotal: 0,
-        subtotal: 0,
-        contingency_amount: 0,
-        grand_total: 0,
-      };
-    }
-
-    const materialsSubtotal = result.cost_breakdown.materials_subtotal * tierMultiplier;
-    const laborSubtotal = result.cost_breakdown.labor_subtotal * tierMultiplier;
-    const subtotal = materialsSubtotal + laborSubtotal;
-    const contingencyAmount = subtotal * (result.contingency_percent / 100);
-
-    return {
-      materials_subtotal: materialsSubtotal,
-      labor_subtotal: laborSubtotal,
-      subtotal: subtotal,
-      contingency_amount: contingencyAmount,
-      grand_total: subtotal + contingencyAmount,
+      setResult(data.results_summary as unknown as AnalysisResult);
+      setLoadState('ready');
+    })();
+    return () => {
+      cancelled = true;
     };
-  }, [result?.cost_breakdown, result?.contingency_percent, tierMultiplier]);
-
-  const adjustedMepEstimate = useMemo(() => (result?.mep_breakdown?.mep_estimate || 0) * tierMultiplier, [result?.mep_breakdown?.mep_estimate, tierMultiplier]);
-
-  const adjustedDemoTotal = useMemo(() => (result?.demo_breakdown?.subtotal || 0) * tierMultiplier, [result?.demo_breakdown?.subtotal, tierMultiplier]);
-
-  const adjustedDemoLineItems = useMemo((): DemoLineItem[] => {
-    if (!result?.demo_breakdown?.line_items) return [];
-    return result.demo_breakdown.line_items.map(item => ({
-      ...item,
-      material_cost: item.material_cost * tierMultiplier,
-      labor_cost: item.labor_cost * tierMultiplier,
-      total_cost: item.total_cost * tierMultiplier,
-      price_per_unit: item.price_per_unit * tierMultiplier,
-    }));
-  }, [result?.demo_breakdown?.line_items, tierMultiplier]);
-
-  const structuralEstimates = useMemo(() => {
-    if (!result?.structural_estimates) return null;
-
-    const multiplier = tierMultiplier;
-    const scaleDetail = (detail: any) => {
-      const line_items = Object.fromEntries(
-        Object.entries(detail.line_items || {}).map(([key, item]: any) => [
-          key,
-          {
-            ...item,
-            material_cost: (item.material_cost || 0) * multiplier,
-            labor_cost: (item.labor_cost || 0) * multiplier,
-            total_cost: (item.total_cost || 0) * multiplier,
-          },
-        ])
-      );
-
-      return {
-        ...detail,
-        line_items,
-        total_material: (detail.total_material || 0) * multiplier,
-        total_labor: (detail.total_labor || 0) * multiplier,
-        grand_total: (detail.grand_total || 0) * multiplier,
-      };
-    };
-
-    return {
-      ...result.structural_estimates,
-      framing: scaleDetail(result.structural_estimates.framing),
-      foundation: scaleDetail(result.structural_estimates.foundation),
-      roofing: {
-        ...scaleDetail(result.structural_estimates.roofing),
-        roof_area_sqft: result.structural_estimates.roofing?.roof_area_sqft,
-      },
-      subtotal_material: (result.structural_estimates.subtotal_material || 0) * multiplier,
-      subtotal_labor: (result.structural_estimates.subtotal_labor || 0) * multiplier,
-      grand_total: (result.structural_estimates.grand_total || 0) * multiplier,
-    };
-  }, [result?.structural_estimates, tierMultiplier]);
-
-
-
-  const interiorGrandTotal = adjustedCostBreakdown.grand_total;
-  const structuralGrandTotal = structuralEstimates?.grand_total || 0;
-  const demoTotal = remodelMode ? adjustedDemoTotal : 0;
-  const combinedGrandTotal = interiorGrandTotal + structuralGrandTotal + demoTotal;
-  const structuralTotalForDisplay = structuralGrandTotal;
-
-  if (!result) {
-    return null;
-  }
-
-  const handleTierChange = (tier: QualityTier) => {
-    setSelectedTier(tier);
-  };
-
-  const handleNewEstimate = () => {
-    navigate('/analyze');
-  };
-
-  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+  }, [id, user, authLoading, result]);
 
   const handleDownloadPdf = useCallback(async () => {
     if (!result || isGeneratingPdf) return;
-    
     setIsGeneratingPdf(true);
+    setPdfError(null);
     try {
-      // Create an adjusted result with the current tier's costs + structural
-      const adjustedResult: AnalysisResult = {
-        ...result,
-        materials: adjustedMaterials,
-        cost_breakdown: adjustedCostBreakdown,
-        structural_estimates: structuralEstimates || undefined,
-      };
-
-      await generatePDFReport(adjustedResult, selectedTier);
-    } catch (error) {
-      console.error('PDF generation failed:', error);
-      alert(error instanceof Error ? error.message : 'Failed to generate PDF. Please try again.');
+      await generatePDFReport(result, result.quality_tier ?? 'standard');
+    } catch (e) {
+      setPdfError(
+        e instanceof Error ? e.message : "We couldn't generate the PDF. Please try again."
+      );
     } finally {
       setIsGeneratingPdf(false);
     }
-  }, [result, adjustedMaterials, adjustedCostBreakdown, structuralEstimates, selectedTier, isGeneratingPdf]);
+  }, [result, isGeneratingPdf]);
 
-  const formattedTotal = formatCurrency(combinedGrandTotal);
-  const roomCount = result.rooms?.length || 0;
-  const totalArea = (result.total_area || 0).toLocaleString();
+  const handleAnalyzeAnother = () => navigate('/analyze');
+
+  const sortedMaterials = useMemo(() => {
+    if (!result?.materials) return [];
+    return [...result.materials].sort(
+      (a, b) => a.category.localeCompare(b.category) || a.name.localeCompare(b.name)
+    );
+  }, [result?.materials]);
+
+  const hasLowConfidence = useMemo(() => {
+    if (!result?.rooms) return false;
+    return result.rooms.some(
+      (r) => typeof r.confidence === 'number' && r.confidence < 0.5
+    );
+  }, [result?.rooms]);
 
   return (
-    <Layout hideFooter>
-      {isGuest && (
-        <div className="w-full bg-blue-600/90 text-white text-sm text-center py-2.5 px-4">
-          Your rooms and total area are shown below.{' '}
-          <a href="/signup" className="underline font-medium hover:text-white/80">Create a free account</a>{' '}
-          to unlock detailed costs, materials breakdown, and PDF reports.
-        </div>
-      )}
-      <section className="relative overflow-hidden border-b border-white/10 bg-[#0a0d14] text-white">
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-600/10 via-transparent to-transparent" aria-hidden="true" />
-        <div className="absolute -top-36 left-1/2 h-[360px] w-[820px] -translate-x-1/2 rounded-full bg-blue-600/10 blur-[120px]" aria-hidden="true" />
+    <div className="min-h-screen bg-white text-slate-900 flex flex-col">
+      <SiteHeader />
 
-        <div className="container py-10 md:py-14">
-          <div className="max-w-4xl mx-auto flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-            <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white/70">
-                <span className="h-1.5 w-1.5 rounded-full bg-blue-400" />
-                Estimate complete
-              </div>
-              <h1 className="mt-4 text-3xl md:text-4xl font-bold tracking-tight">
-                Your takeoff is ready
+      <section className="flex-1 bg-stone-100 py-20 md:py-28">
+        <div className="max-w-4xl mx-auto px-6">
+          {loadState === 'loading' && (
+            <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center text-sm text-slate-500">
+              Loading estimate...
+            </div>
+          )}
+
+          {loadState === 'not-found' && (
+            <div className="rounded-2xl border border-slate-200 bg-white p-10 md:p-14 shadow-sm text-center">
+              <h1 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight mb-3">
+                We couldn't find that estimate.
               </h1>
-              <p className="mt-2 text-white/60">
-                {result.project_name || 'Project estimate'} · {selectedTier} tier
+              <p className="text-slate-600 mb-8 leading-relaxed">
+                Upload a floor plan to start a new one.
               </p>
+              <Button
+                size="lg"
+                onClick={handleAnalyzeAnother}
+                className="gap-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold border-0 shadow-lg shadow-amber-500/20"
+              >
+                Upload a floor plan
+                <ArrowRight className="w-4 h-4" />
+              </Button>
             </div>
+          )}
 
-            <div className="w-full md:w-auto rounded-2xl border border-white/10 bg-white/5 px-5 py-4 backdrop-blur">
-              <p className="text-xs uppercase tracking-[0.2em] text-white/50">Grand total</p>
-              <p className="mt-2 text-2xl font-semibold font-mono text-white">{formattedTotal}</p>
-              <p className="mt-1 text-xs text-white/50">
-                {roomCount} rooms · {totalArea} sq ft
-              </p>
-            </div>
-          </div>
+          {loadState === 'ready' && result && (
+            <>
+              <div className="mb-8">
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 leading-tight mb-4">
+                  Your Ballpark Estimate
+                </h1>
+                <p className="text-lg text-slate-700 leading-relaxed max-w-2xl">
+                  Here's the cost range based on your floor plan. Use it to frame the conversation, then do your real takeoff on the jobs worth chasing.
+                </p>
+              </div>
+
+              <div className="rounded-r-lg border-l-4 border-amber-500 bg-amber-50/50 px-5 py-4 mb-14">
+                <p className="text-sm text-slate-700 leading-relaxed">
+                  This is a ballpark estimate with low, mid, and high ranges, not a bid or fixed-price quote. Best used for lead qualification and early client conversations. Your real takeoff is still your real takeoff.
+                </p>
+              </div>
+
+              <section className="mb-14">
+                <div className="mb-6">
+                  <div className="text-xs uppercase tracking-widest text-amber-600 font-semibold mb-2">
+                    Floor plan
+                  </div>
+                  <h2 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">
+                    Rooms detected
+                  </h2>
+                </div>
+
+                {hasLowConfidence && (
+                  <p className="mb-5 pl-4 py-3 border-l-2 border-amber-500/60 bg-amber-50/30 text-sm text-slate-700 leading-relaxed">
+                    Some measurements on this plan were harder to read than usual. The room list and ranges below are still a useful starting point, but treat the dimensions as approximate.
+                  </p>
+                )}
+
+                <div className="rounded-xl border border-slate-200 bg-white overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500">
+                        <th className="text-left px-6 py-3 font-semibold">Room</th>
+                        <th className="text-right px-6 py-3 font-semibold">Area</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(result.rooms ?? []).length === 0 ? (
+                        <tr>
+                          <td colSpan={2} className="px-6 py-6 text-center text-sm text-slate-500">
+                            No rooms detected on this plan.
+                          </td>
+                        </tr>
+                      ) : (
+                        (result.rooms ?? []).map((room, i) => {
+                          const isLast = i === (result.rooms?.length ?? 0) - 1;
+                          return (
+                            <tr key={i} className={isLast ? '' : 'border-b border-slate-100'}>
+                              <td className="px-6 py-3 text-slate-900">{room.name}</td>
+                              <td className="px-6 py-3 text-right text-slate-700 font-mono tabular-nums">
+                                {formatArea(room.area)}
+                              </td>
+                            </tr>
+                          );
+                        })
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+
+                <p className="mt-4 text-sm text-slate-500 leading-relaxed">
+                  Room detection is our strongest capability. We identify rooms with high reliability. Area measurements are most accurate on clean, scaled floor plans.
+                </p>
+              </section>
+
+              <section className="mb-14">
+                <div className="mb-3">
+                  <div className="text-xs uppercase tracking-widest text-amber-600 font-semibold mb-2">
+                    Materials
+                  </div>
+                  <h2 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">
+                    Estimated material quantities
+                  </h2>
+                </div>
+                <p className="text-sm text-slate-500 leading-relaxed mb-5">
+                  Quantities are calculated from the parsed room layout. Foundation assumes slab-on-grade (4" thickness). Roofing assumes gable at 4/12 pitch.
+                </p>
+
+                <div className="rounded-xl border border-slate-200 bg-white overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500">
+                        <th className="text-left px-6 py-3 font-semibold">Material</th>
+                        <th className="text-right px-6 py-3 font-semibold">Quantity</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {sortedMaterials.length === 0 ? (
+                        <tr>
+                          <td colSpan={2} className="px-6 py-6 text-center text-sm text-slate-500">
+                            No material breakdown available for this estimate.
+                          </td>
+                        </tr>
+                      ) : (
+                        sortedMaterials.map((m, i) => {
+                          const isLast = i === sortedMaterials.length - 1;
+                          return (
+                            <tr key={i} className={isLast ? '' : 'border-b border-slate-100'}>
+                              <td className="px-6 py-3">
+                                <div className="text-slate-900">{m.name}</div>
+                                <div className="text-xs uppercase tracking-wider text-slate-500 mt-0.5">
+                                  {m.category}
+                                </div>
+                              </td>
+                              <td className="px-6 py-3 text-right text-slate-700 font-mono tabular-nums">
+                                {formatQuantity(m.quantity)} {m.unit}
+                              </td>
+                            </tr>
+                          );
+                        })
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+
+              <section className="mb-14">
+                <div className="mb-6">
+                  <div className="text-xs uppercase tracking-widest text-amber-600 font-semibold mb-2">
+                    Estimate
+                  </div>
+                  <h2 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">
+                    Cost range
+                  </h2>
+                </div>
+
+                <div className="grid md:grid-cols-3 gap-4 md:gap-6">
+                  {TIERS.map((tier) => {
+                    const tierData = result.tier_comparisons?.find((t) => t.tier === tier.key);
+                    const value = tierData?.grand_total ?? 0;
+                    const isStandard = tier.key === 'standard';
+                    return (
+                      <div
+                        key={tier.key}
+                        className={cn(
+                          'rounded-xl bg-white p-6 flex flex-col',
+                          isStandard
+                            ? 'border-2 border-amber-500 shadow-md'
+                            : 'border border-slate-200 shadow-sm'
+                        )}
+                      >
+                        <div
+                          className={cn(
+                            'text-xs uppercase tracking-widest font-semibold mb-2',
+                            isStandard ? 'text-amber-600' : 'text-slate-500'
+                          )}
+                        >
+                          {tier.label}
+                        </div>
+                        <div className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight mb-3 font-mono tabular-nums">
+                          {formatRoundedCurrency(value)}
+                        </div>
+                        <p className="text-sm text-slate-600 leading-relaxed">{tier.description}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <p className="mt-6 text-sm text-slate-500 leading-relaxed">
+                  Costs use state-level pricing data and standard residential assumptions. These ranges are a starting point for your conversation, not a substitute for a detailed estimate.
+                </p>
+              </section>
+
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Button
+                  size="lg"
+                  onClick={handleDownloadPdf}
+                  disabled={isGeneratingPdf}
+                  className="gap-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold border-0 shadow-lg shadow-amber-500/20 disabled:opacity-80"
+                >
+                  {isGeneratingPdf ? (
+                    <>
+                      <span className="inline-block w-2 h-2 rounded-full bg-current animate-pulse" />
+                      Generating PDF...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="w-4 h-4" />
+                      Download PDF Report
+                    </>
+                  )}
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  onClick={handleAnalyzeAnother}
+                  className="gap-2 border-slate-300 bg-white text-slate-900 hover:bg-stone-50"
+                >
+                  Analyze Another Plan
+                </Button>
+              </div>
+
+              {pdfError && (
+                <p role="alert" className="mt-3 text-sm text-rose-600 leading-relaxed">
+                  {pdfError}
+                </p>
+              )}
+            </>
+          )}
         </div>
       </section>
 
-      <StickySummary
-        grandTotal={combinedGrandTotal}
-        roomCount={roomCount}
-        totalArea={result.total_area || 0}
-      />
-
-      <div className="bg-background">
-        <div className="container py-6 md:py-10">
-          <div className="max-w-4xl mx-auto space-y-6">
-            {/* Beta Disclaimer Banner */}
-            <div className="bg-amber-500/10 border-l-4 border-amber-500/40 p-4 rounded-r-lg">
-              <div className="flex items-start gap-3">
-                <AlertCircle className="h-5 w-5 text-amber-400 flex-shrink-0 mt-0.5" />
-                <div className="flex-1">
-                  <h3 className="text-sm font-semibold text-amber-300 mb-1">Beta Version - Verify Before Use</h3>
-                  <p className="text-sm text-amber-200/70">
-                    AI estimates are approximately 70-80% accurate. Always verify measurements and costs for final quotes.
-                    This tool is designed to provide quick preliminary estimates, not replace professional takeoff services.
-                  </p>
-                </div>
-              </div>
-            </div>
-            
-            <AnalysisSettings
-              projectName={result.project_name}
-              qualityTier={result.quality_tier}
-              region={result.region}
-              includeLabor={result.include_labor}
-              contingencyPercent={result.contingency_percent}
-              laborAvailability={result.labor_availability}
-            />
-            
-            <BlueprintSummary result={result} thumbnail={thumbnail} grandTotal={combinedGrandTotal} />
-
-            <RoomBreakdown rooms={result.rooms || []} />
-
-            {/* Remodel Mode toggle */}
-            {result.demo_breakdown && (
-              <div className="flex items-center gap-3 px-4 py-3 rounded-xl border border-border bg-surface/60">
-                <HardHat className="h-4 w-4 text-orange-400 flex-shrink-0" />
-                <div className="flex-1">
-                  <Label htmlFor="remodel-mode" className="text-sm font-medium text-foreground cursor-pointer">
-                    Remodel Mode
-                  </Label>
-                  <p className="text-xs text-muted-foreground">Add demo &amp; removal costs before new materials</p>
-                </div>
-                <Switch
-                  id="remodel-mode"
-                  checked={remodelMode}
-                  onCheckedChange={setRemodelMode}
-                />
-              </div>
-            )}
-
-            {/* --- Paywall boundary: everything below here is locked for guests --- */}
-            <PaywallOverlay locked={!!isGuest}>
-              <CostTable
-                materials={adjustedMaterials}
-                costBreakdown={adjustedCostBreakdown}
-                contingencyPercent={result.contingency_percent || 10}
-                selectedTier={selectedTier}
-                structuralTotal={structuralTotalForDisplay}
-                combinedGrandTotal={combinedGrandTotal}
-              />
-
-
-              {structuralEstimates && (
-                <div className="card-elevated p-5 animate-slide-up" style={{ animationDelay: '0.25s' }}>
-                  <div className="flex items-center justify-between gap-4 mb-4">
-                    <div>
-                      <h3 className="font-semibold text-foreground">Structural Shell Estimate</h3>
-                      <p className="text-sm text-muted-foreground">Framing, foundation, and roofing costs based on NAHB 2024 benchmarks.</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Structural total</p>
-                      <p className="text-lg font-semibold font-mono text-foreground">{formatCurrency(structuralTotalForDisplay)}</p>
-                    </div>
-                  </div>
-
-                  <div className="grid gap-4 md:grid-cols-3">
-                    {([
-                      { title: 'Framing', data: structuralEstimates.framing, subtitle: 'Studs, plates, headers' },
-                      { title: 'Foundation', data: structuralEstimates.foundation, subtitle: 'Slab-on-grade' },
-                      { title: 'Roofing', data: structuralEstimates.roofing, subtitle: 'Gable roof, 4/12 pitch' },
-                    ] as const).map((item) => (
-                      <div key={item.title} className="rounded-xl border border-border bg-surface/60 p-4">
-                        <h4 className="text-sm font-semibold text-foreground">{item.title}</h4>
-                        <p className="text-xs text-muted-foreground">{item.subtitle}</p>
-                        <div className="mt-3 space-y-1 text-sm">
-                          <div className="space-y-1 rounded-lg border border-border/60 bg-background/30 p-3 text-xs">
-                            {Object.entries(item.data.line_items || {}).map(([key, lineItem]: any) => (
-                              <div key={key} className="flex justify-between gap-3 text-muted-foreground">
-                                <span className="capitalize">{key.replace(/_/g, ' ')}</span>
-                                <span className="font-mono text-right text-foreground">{formatCurrency(lineItem.total_cost || 0)}</span>
-                              </div>
-                            ))}
-                          </div>
-                          <div className="flex justify-between text-muted-foreground">
-                            <span>Materials</span>
-                            <span className="font-mono">{formatCurrency(item.data.total_material)}</span>
-                          </div>
-                          <div className="flex justify-between text-muted-foreground">
-                            <span>Labor</span>
-                            <span className="font-mono">{formatCurrency(item.data.total_labor)}</span>
-                          </div>
-                          <div className="flex justify-between pt-2 border-t border-border font-semibold">
-                            <span>Total</span>
-                            <span className="font-mono">{formatCurrency(item.data.grand_total)}</span>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {result.mep_breakdown && (
-                <div className="rounded-xl border border-yellow-500/20 bg-yellow-500/5 p-4 mt-4">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-yellow-400 text-sm font-semibold">MEP Rough Estimate</span>
-                    <span className="text-xs text-yellow-400/60 border border-yellow-400/20 rounded px-1.5 py-0.5">±30%</span>
-                  </div>
-                  <div className="text-white font-mono text-base mb-1">${adjustedMepEstimate.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
-                  <p className="text-xs text-white/40">{result.mep_breakdown.disclaimer}</p>
-                </div>
-              )}
-
-              {remodelMode && result.demo_breakdown && (
-                <div className="card-elevated p-5 mt-4 animate-slide-up border border-orange-500/20 bg-orange-500/5">
-                  <div className="flex items-center justify-between gap-4 mb-4">
-                    <div className="flex items-center gap-2">
-                      <HardHat className="h-4 w-4 text-orange-400" />
-                      <div>
-                        <h3 className="font-semibold text-foreground">Demo &amp; Removal</h3>
-                        <p className="text-sm text-muted-foreground">Labor costs to remove existing materials before new installation.</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Demo total</p>
-                      <p className="text-lg font-semibold font-mono text-foreground">{formatCurrency(adjustedDemoTotal)}</p>
-                    </div>
-                  </div>
-                  <div className="rounded-lg border border-border/60 bg-background/30 overflow-hidden">
-                    <table className="w-full text-xs">
-                      <thead>
-                        <tr className="border-b border-border/60">
-                          <th className="text-left px-3 py-2 text-muted-foreground font-medium">Item</th>
-                          <th className="text-right px-3 py-2 text-muted-foreground font-medium">Qty</th>
-                          <th className="text-right px-3 py-2 text-muted-foreground font-medium">Total</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {adjustedDemoLineItems.map((item, i) => (
-                          <tr key={item.material_type} className={i < adjustedDemoLineItems.length - 1 ? 'border-b border-border/40' : ''}>
-                            <td className="px-3 py-2 text-foreground">{item.display_name}</td>
-                            <td className="px-3 py-2 text-right font-mono text-muted-foreground">{item.units_needed} {item.unit}</td>
-                            <td className="px-3 py-2 text-right font-mono text-foreground">{formatCurrency(item.total_cost)}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-3">{result.demo_breakdown.disclaimer}</p>
-                </div>
-              )}
-
-              <p className="text-xs text-muted-foreground">
-                Estimate includes structural shell (framing, foundation, roofing) and interior finishes. Excludes MEP (electrical, plumbing, HVAC), site work, and land.
-              </p>
-            </PaywallOverlay>
-
-            <TierComparison
-              tiers={result.tier_comparisons || []}
-              currentTier={selectedTier}
-              onTierChange={handleTierChange}
-            />
-
-            {isGuest ? (
-              <div className="flex flex-col items-center gap-4 py-6 animate-slide-up" style={{ animationDelay: '0.4s' }}>
-                <p className="text-sm text-muted-foreground text-center">
-                  Sign up to download PDF reports and access your full estimate history.
-                </p>
-                <div className="flex gap-3">
-                  <Button onClick={() => navigate('/signup')} size="lg" className="gap-2">
-                    Sign Up Free <ArrowRight className="w-4 h-4" />
-                  </Button>
-                  <Button onClick={handleNewEstimate} variant="outline" size="lg" className="gap-2">
-                    <RefreshCw className="w-4 h-4" /> New Estimate
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <ResultActions
-                onNewEstimate={handleNewEstimate}
-                onDownloadPdf={handleDownloadPdf}
-                isGeneratingPdf={isGeneratingPdf}
-              />
-            )}
-          </div>
-        </div>
-      </div>
-    </Layout>
+      <SiteFooter />
+    </div>
   );
 }

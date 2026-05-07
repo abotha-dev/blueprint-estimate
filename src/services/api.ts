@@ -1,6 +1,6 @@
 import { AnalysisResult, AnalysisSettings, Room, MaterialItem, CostBreakdown, TierEstimate, StructuralEstimates, ExteriorEstimates, DemoBreakdown } from '@/types';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://takeoff-api-uyzv.onrender.com';
+export const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://takeoff-api-uyzv.onrender.com';
 
 /**
  * Parse dimension string like "11'" or "15'-6\"" to feet (number)
